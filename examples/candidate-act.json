@@ -1,0 +1,66 @@
+{
+  "act_type": "SLICE_RESOURCE_ALLOCATION",
+  "candidate_act_id": "net-39f8820b-reference",
+  "created_at": "2026-08-26T17:50:00Z",
+  "expires_at": "2026-08-26T17:50:05Z",
+  "finality_sink": {
+    "sink_id": "ran-finality-sink-04",
+    "sink_type": "RAN_CONTROL"
+  },
+  "freshness": {
+    "nonce": "C3929177AA801C55",
+    "sequence": 8821,
+    "session_id": null
+  },
+  "initiator": {
+    "agent_id": "ran-agent-7",
+    "function_type": "AI_RAN_CONTROLLER",
+    "model_id": "traffic-optimizer-v5",
+    "network_function_id": "ai-ran-controller-7",
+    "runtime_attestation_digest": null
+  },
+  "network_context": {
+    "cell_ids": [
+      "cell-108"
+    ],
+    "edge_region": null,
+    "jurisdiction": "IN",
+    "network_domain": "ran-domain-2",
+    "plmn_id": "00101",
+    "slice_id": "slice-17"
+  },
+  "object_type": "network_candidate_act",
+  "policy_state": {
+    "authority_epoch": 8,
+    "operator_policy_profile": "ran-autonomy-v3",
+    "policy_epoch": 42,
+    "regulatory_profile": null,
+    "revocation_epoch": 7
+  },
+  "purpose": {
+    "declared_purpose": "Maintain bounded network objective",
+    "purpose_epoch": null,
+    "purpose_id": "latency-optimization",
+    "service_intent_reference": null
+  },
+  "requested_effect": {
+    "duration_seconds": 120,
+    "effect_type": "ALLOCATE_CAPACITY",
+    "parameters_digest": {
+      "algorithm": "SHA-256",
+      "value": "202iqkOl0egmoF5Dlv4DYT45Fz7hKdu-Gsdgajlx9dA"
+    },
+    "reversibility": "REVERSIBLE"
+  },
+  "resource_scope": {
+    "resource_ids": [
+      "slice-17"
+    ],
+    "resource_type": "SLICE",
+    "subscriber_scope": {
+      "scope_reference": "tenant-A",
+      "scope_type": "TENANT"
+    }
+  },
+  "version": "1.0"
+}

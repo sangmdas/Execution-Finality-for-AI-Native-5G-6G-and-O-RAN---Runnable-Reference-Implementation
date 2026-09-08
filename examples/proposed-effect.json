@@ -1,0 +1,16 @@
+{
+  "duration_seconds": 120,
+  "effect_type": "ALLOCATE_CAPACITY",
+  "parameters": {
+    "additional_prb_percent": 12,
+    "duration_seconds": 120
+  },
+  "parameters_digest": {
+    "algorithm": "SHA-256",
+    "value": "202iqkOl0egmoF5Dlv4DYT45Fz7hKdu-Gsdgajlx9dA"
+  },
+  "resource_ids": [
+    "slice-17"
+  ],
+  "resource_type": "SLICE"
+}

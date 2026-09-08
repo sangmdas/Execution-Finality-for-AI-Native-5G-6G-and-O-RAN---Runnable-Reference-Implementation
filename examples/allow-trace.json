@@ -1,0 +1,204 @@
+{
+  "authority": {
+    "authority_id": "nfa-b881802b99b5",
+    "binding": {
+      "activation_commitment": "yDIP67KJvJboa1VVFgkGOruTLTpcWqvatgM7Co20LYE",
+      "authority_epoch": 8,
+      "candidate_act_digest": {
+        "algorithm": "SHA-256",
+        "value": "0s76NZOrI8b6t536CBnt71JodhoXHSSyydDORgYz23U"
+      },
+      "configuration_epoch": 771,
+      "effectuation_boundary_id": "boundary:RAN_CONTROL:ran-finality-sink-04",
+      "evidence_digest": {
+        "algorithm": "SHA-256",
+        "value": "Y96mld3sWLHVv1jli5fyKcd2YVBrAdhVDEa8MgOO98A"
+      },
+      "evidence_id": "evidence-a0c973aeb366",
+      "finality_sink_id": "ran-finality-sink-04",
+      "nonce": "LIVEEXAMPLE00000001",
+      "policy_epoch": 42,
+      "protected_state_reference": "net-ped-state-7801",
+      "revocation_epoch": 7,
+      "sequence": 8821,
+      "topology_epoch": 993
+    },
+    "candidate_act_id": "net-example-live-0001",
+    "decision_id": "nvd-d124cb3d4cbf",
+    "issuer": {
+      "algorithm": "Ed25519",
+      "key_id": "ped-ed25519-1",
+      "ped_id": "operator-ped-1",
+      "signature": "HDyCLDg9ZAT0fnPATshJ135H_EtNjEUH6gtqeaYfDfwnNR-kpb0V3pY70G3V3K8SDVsgY3Du3B5HyeMFLcFhBQ"
+    },
+    "lifetime": {
+      "expires_at": "2026-09-08T07:17:37.576083Z",
+      "issued_at": "2026-09-08T07:17:33.576083Z",
+      "single_use": true
+    },
+    "object_type": "network_finality_authority",
+    "scope": {
+      "act_type": "SLICE_RESOURCE_ALLOCATION",
+      "duration_seconds_max": 120,
+      "jurisdiction": "IN",
+      "network_domain": "ran-domain-2",
+      "parameters_digest": "202iqkOl0egmoF5Dlv4DYT45Fz7hKdu-Gsdgajlx9dA",
+      "permitted_effect_type": "ALLOCATE_CAPACITY",
+      "purpose_id": "latency-optimization",
+      "resource_ids": [
+        "slice-17"
+      ],
+      "resource_type": "SLICE",
+      "subscriber_scope": {
+        "scope_reference": "tenant-A",
+        "scope_type": "TENANT"
+      }
+    },
+    "version": "1.0"
+  },
+  "candidate": {
+    "act_type": "SLICE_RESOURCE_ALLOCATION",
+    "candidate_act_id": "net-example-live-0001",
+    "created_at": "2026-09-08T07:17:33.575946Z",
+    "expires_at": "2026-09-08T07:17:38.575946Z",
+    "finality_sink": {
+      "sink_id": "ran-finality-sink-04",
+      "sink_type": "RAN_CONTROL"
+    },
+    "freshness": {
+      "nonce": "LIVEEXAMPLE00000001",
+      "sequence": 8821,
+      "session_id": null
+    },
+    "initiator": {
+      "agent_id": "ran-agent-7",
+      "function_type": "AI_RAN_CONTROLLER",
+      "model_id": "traffic-optimizer-v5",
+      "network_function_id": "ai-ran-controller-7",
+      "runtime_attestation_digest": null
+    },
+    "network_context": {
+      "cell_ids": [
+        "cell-108"
+      ],
+      "edge_region": null,
+      "jurisdiction": "IN",
+      "network_domain": "ran-domain-2",
+      "plmn_id": "00101",
+      "slice_id": "slice-17"
+    },
+    "object_type": "network_candidate_act",
+    "policy_state": {
+      "authority_epoch": 8,
+      "operator_policy_profile": "ran-autonomy-v3",
+      "policy_epoch": 42,
+      "regulatory_profile": null,
+      "revocation_epoch": 7
+    },
+    "purpose": {
+      "declared_purpose": "Maintain bounded network objective",
+      "purpose_epoch": null,
+      "purpose_id": "latency-optimization",
+      "service_intent_reference": null
+    },
+    "requested_effect": {
+      "duration_seconds": 120,
+      "effect_type": "ALLOCATE_CAPACITY",
+      "parameters_digest": {
+        "algorithm": "SHA-256",
+        "value": "202iqkOl0egmoF5Dlv4DYT45Fz7hKdu-Gsdgajlx9dA"
+      },
+      "reversibility": "REVERSIBLE"
+    },
+    "resource_scope": {
+      "resource_ids": [
+        "slice-17"
+      ],
+      "resource_type": "SLICE",
+      "subscriber_scope": {
+        "scope_reference": "tenant-A",
+        "scope_type": "TENANT"
+      }
+    },
+    "version": "1.0"
+  },
+  "network_effects": {
+    "net-effect-3c1c9c768d": {
+      "authority_id": "nfa-b881802b99b5",
+      "candidate_act_id": "net-example-live-0001",
+      "duration_seconds": 120,
+      "effect_type": "ALLOCATE_CAPACITY",
+      "parameters": {
+        "additional_prb_percent": 12,
+        "duration_seconds": 120
+      },
+      "resource_ids": [
+        "slice-17"
+      ],
+      "resource_type": "SLICE"
+    }
+  },
+  "ped_decision": {
+    "candidate_act_id": "net-example-live-0001",
+    "decision": "ALLOW",
+    "decision_id": "nvd-d124cb3d4cbf",
+    "denial_code": null,
+    "evidence_id": "evidence-a0c973aeb366",
+    "network_state": {
+      "configuration_epoch": 771,
+      "congestion_state": "NORMAL",
+      "slice_state": "ACTIVE",
+      "topology_epoch": 993
+    },
+    "object_type": "network_validation_decision",
+    "protected_state": {
+      "monotonic_counter": 184992,
+      "state_reference": "net-ped-state-7801"
+    },
+    "validated_predicates": {
+      "freshness_valid": true,
+      "initiator_attested": true,
+      "network_state_valid": true,
+      "operator_policy_valid": true,
+      "policy_epoch_valid": true,
+      "purpose_valid": true,
+      "regulatory_policy_valid": true,
+      "requested_effect_valid": true,
+      "resource_scope_valid": true,
+      "revocation_state_valid": true,
+      "sink_binding_valid": true,
+      "subscriber_scope_valid": true
+    },
+    "version": "1.0"
+  },
+  "sink_result": {
+    "authority_id": "nfa-b881802b99b5",
+    "code": "OK",
+    "consumed": true,
+    "decision": "ALLOW",
+    "effectuation_permitted": true,
+    "message": null,
+    "network_effect_id": "net-effect-3c1c9c768d",
+    "operation": "NetworkSinkVerify",
+    "request_id": "net-verify-example",
+    "verification": {
+      "activation_binding": "MATCH",
+      "authority_epoch": "CURRENT",
+      "authority_signature": "VALID",
+      "candidate_act_binding": "MATCH",
+      "configuration_epoch": "CURRENT",
+      "consumption_state": "CONSUMED",
+      "effect_parameters": "MATCH",
+      "evidence_binding": "MATCH",
+      "nonce": "FRESH",
+      "policy_epoch": "CURRENT",
+      "purpose": "MATCH",
+      "resource_scope": "MATCH",
+      "revocation_epoch": "CURRENT",
+      "sequence": "MATCH",
+      "sink_binding": "MATCH",
+      "subscriber_scope": "MATCH",
+      "topology_epoch": "CURRENT"
+    }
+  }
+}

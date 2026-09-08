@@ -1,0 +1,316 @@
+{
+  "$id": "urn:ietf:params:json-schema:network-finality:candidate-act:1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "act_type": {
+      "enum": [
+        "ROUTE_CHANGE",
+        "SESSION_MODIFICATION",
+        "QOS_CHANGE",
+        "SLICE_RESOURCE_ALLOCATION",
+        "RAN_PARAMETER_CHANGE",
+        "POLICY_UPDATE",
+        "NETWORK_API_INVOCATION",
+        "UPF_RULE_CHANGE",
+        "BEAM_CHANGE",
+        "SENSING_OPERATION",
+        "RF_ENABLE",
+        "SERVICE_ACTIVATION",
+        "OTHER"
+      ],
+      "type": "string"
+    },
+    "candidate_act_id": {
+      "minLength": 16,
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "finality_sink": {
+      "properties": {
+        "sink_id": {
+          "type": "string"
+        },
+        "sink_type": {
+          "enum": [
+            "UPF",
+            "CONTROL_PLANE_GATEWAY",
+            "RAN_CONTROL",
+            "O_RAN_E2",
+            "O_RAN_A1",
+            "NETWORK_API_GATEWAY",
+            "RF_ENABLE",
+            "SESSION_CONTROLLER",
+            "OTHER"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "sink_id",
+        "sink_type"
+      ],
+      "type": "object"
+    },
+    "freshness": {
+      "properties": {
+        "nonce": {
+          "minLength": 16,
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "session_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "nonce"
+      ],
+      "type": "object"
+    },
+    "initiator": {
+      "properties": {
+        "agent_id": {
+          "type": "string"
+        },
+        "function_type": {
+          "enum": [
+            "AI_RAN_CONTROLLER",
+            "RIC_XAPP",
+            "RIC_RAPP",
+            "SMF",
+            "AMF",
+            "PCF",
+            "UPF_CONTROLLER",
+            "ORCHESTRATOR",
+            "NETWORK_API_CLIENT",
+            "EDGE_AGENT",
+            "OTHER"
+          ],
+          "type": "string"
+        },
+        "model_id": {
+          "type": "string"
+        },
+        "network_function_id": {
+          "type": "string"
+        },
+        "runtime_attestation_digest": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "network_function_id",
+        "function_type"
+      ],
+      "type": "object"
+    },
+    "network_context": {
+      "properties": {
+        "cell_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "edge_region": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": "string"
+        },
+        "network_domain": {
+          "type": "string"
+        },
+        "plmn_id": {
+          "type": "string"
+        },
+        "slice_id": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "object_type": {
+      "const": "network_candidate_act",
+      "type": "string"
+    },
+    "policy_state": {
+      "properties": {
+        "authority_epoch": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "operator_policy_profile": {
+          "type": "string"
+        },
+        "policy_epoch": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "regulatory_profile": {
+          "type": "string"
+        },
+        "revocation_epoch": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "policy_epoch",
+        "authority_epoch",
+        "revocation_epoch"
+      ],
+      "type": "object"
+    },
+    "purpose": {
+      "properties": {
+        "declared_purpose": {
+          "type": "string"
+        },
+        "purpose_epoch": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "purpose_id": {
+          "type": "string"
+        },
+        "service_intent_reference": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "purpose_id",
+        "declared_purpose"
+      ],
+      "type": "object"
+    },
+    "requested_effect": {
+      "properties": {
+        "duration_seconds": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "effect_type": {
+          "type": "string"
+        },
+        "parameters_digest": {
+          "properties": {
+            "algorithm": {
+              "enum": [
+                "SHA-256",
+                "SHA-384",
+                "SHA-512"
+              ],
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "algorithm",
+            "value"
+          ],
+          "type": "object"
+        },
+        "reversibility": {
+          "enum": [
+            "REVERSIBLE",
+            "PARTIALLY_REVERSIBLE",
+            "IRREVERSIBLE"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "effect_type",
+        "parameters_digest"
+      ],
+      "type": "object"
+    },
+    "resource_scope": {
+      "properties": {
+        "resource_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "resource_type": {
+          "enum": [
+            "SLICE",
+            "CELL",
+            "QOS_FLOW",
+            "SESSION",
+            "UPF_RULE",
+            "ROUTE",
+            "SPECTRUM_RESOURCE",
+            "BEAM",
+            "NETWORK_API",
+            "SENSING_RESOURCE",
+            "OTHER"
+          ],
+          "type": "string"
+        },
+        "subscriber_scope": {
+          "properties": {
+            "scope_reference": {
+              "type": "string"
+            },
+            "scope_type": {
+              "enum": [
+                "NONE",
+                "SINGLE_SUBSCRIBER",
+                "SUBSCRIBER_GROUP",
+                "TENANT",
+                "SLICE",
+                "CELL_POPULATION"
+              ],
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "resource_type",
+        "resource_ids"
+      ],
+      "type": "object"
+    },
+    "version": {
+      "const": "1.0",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "object_type",
+    "candidate_act_id",
+    "act_type",
+    "created_at",
+    "expires_at",
+    "initiator",
+    "network_context",
+    "resource_scope",
+    "purpose",
+    "requested_effect",
+    "policy_state",
+    "freshness",
+    "finality_sink"
+  ],
+  "title": "NetworkCandidateAct",
+  "type": "object"
+}

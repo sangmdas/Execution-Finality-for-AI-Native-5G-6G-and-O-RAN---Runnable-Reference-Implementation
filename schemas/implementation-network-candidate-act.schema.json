@@ -1,0 +1,567 @@
+{
+  "$defs": {
+    "ActType": {
+      "enum": [
+        "ROUTE_CHANGE",
+        "SESSION_MODIFICATION",
+        "QOS_CHANGE",
+        "SLICE_RESOURCE_ALLOCATION",
+        "RAN_PARAMETER_CHANGE",
+        "POLICY_UPDATE",
+        "NETWORK_API_INVOCATION",
+        "UPF_RULE_CHANGE",
+        "BEAM_CHANGE",
+        "SENSING_OPERATION",
+        "RF_ENABLE",
+        "SERVICE_ACTIVATION",
+        "OTHER"
+      ],
+      "title": "ActType",
+      "type": "string"
+    },
+    "Digest": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "default": "SHA-256",
+          "enum": [
+            "SHA-256",
+            "SHA-384",
+            "SHA-512"
+          ],
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "value": {
+          "minLength": 8,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "Digest",
+      "type": "object"
+    },
+    "FinalitySinkDescriptor": {
+      "additionalProperties": false,
+      "properties": {
+        "sink_id": {
+          "minLength": 1,
+          "title": "Sink Id",
+          "type": "string"
+        },
+        "sink_type": {
+          "$ref": "#/$defs/SinkType"
+        }
+      },
+      "required": [
+        "sink_id",
+        "sink_type"
+      ],
+      "title": "FinalitySinkDescriptor",
+      "type": "object"
+    },
+    "Freshness": {
+      "additionalProperties": false,
+      "properties": {
+        "nonce": {
+          "minLength": 16,
+          "title": "Nonce",
+          "type": "string"
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sequence"
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Session Id"
+        }
+      },
+      "required": [
+        "nonce"
+      ],
+      "title": "Freshness",
+      "type": "object"
+    },
+    "FunctionType": {
+      "enum": [
+        "AI_RAN_CONTROLLER",
+        "RIC_XAPP",
+        "RIC_RAPP",
+        "SMF",
+        "AMF",
+        "PCF",
+        "UPF_CONTROLLER",
+        "ORCHESTRATOR",
+        "NETWORK_API_CLIENT",
+        "EDGE_AGENT",
+        "OTHER"
+      ],
+      "title": "FunctionType",
+      "type": "string"
+    },
+    "Initiator": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Agent Id"
+        },
+        "function_type": {
+          "$ref": "#/$defs/FunctionType"
+        },
+        "model_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Id"
+        },
+        "network_function_id": {
+          "minLength": 1,
+          "title": "Network Function Id",
+          "type": "string"
+        },
+        "runtime_attestation_digest": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Runtime Attestation Digest"
+        }
+      },
+      "required": [
+        "network_function_id",
+        "function_type"
+      ],
+      "title": "Initiator",
+      "type": "object"
+    },
+    "NetworkContext": {
+      "additionalProperties": false,
+      "properties": {
+        "cell_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Cell Ids",
+          "type": "array"
+        },
+        "edge_region": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Edge Region"
+        },
+        "jurisdiction": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Jurisdiction"
+        },
+        "network_domain": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Network Domain"
+        },
+        "plmn_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Plmn Id"
+        },
+        "slice_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Slice Id"
+        }
+      },
+      "title": "NetworkContext",
+      "type": "object"
+    },
+    "PolicyState": {
+      "additionalProperties": false,
+      "properties": {
+        "authority_epoch": {
+          "minimum": 0,
+          "title": "Authority Epoch",
+          "type": "integer"
+        },
+        "operator_policy_profile": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operator Policy Profile"
+        },
+        "policy_epoch": {
+          "minimum": 0,
+          "title": "Policy Epoch",
+          "type": "integer"
+        },
+        "regulatory_profile": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Regulatory Profile"
+        },
+        "revocation_epoch": {
+          "minimum": 0,
+          "title": "Revocation Epoch",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "policy_epoch",
+        "authority_epoch",
+        "revocation_epoch"
+      ],
+      "title": "PolicyState",
+      "type": "object"
+    },
+    "Purpose": {
+      "additionalProperties": false,
+      "properties": {
+        "declared_purpose": {
+          "minLength": 1,
+          "title": "Declared Purpose",
+          "type": "string"
+        },
+        "purpose_epoch": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Purpose Epoch"
+        },
+        "purpose_id": {
+          "minLength": 1,
+          "title": "Purpose Id",
+          "type": "string"
+        },
+        "service_intent_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Service Intent Reference"
+        }
+      },
+      "required": [
+        "purpose_id",
+        "declared_purpose"
+      ],
+      "title": "Purpose",
+      "type": "object"
+    },
+    "RequestedEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Seconds"
+        },
+        "effect_type": {
+          "minLength": 1,
+          "title": "Effect Type",
+          "type": "string"
+        },
+        "parameters_digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "reversibility": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Reversibility"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "effect_type",
+        "parameters_digest"
+      ],
+      "title": "RequestedEffect",
+      "type": "object"
+    },
+    "ResourceScope": {
+      "additionalProperties": false,
+      "properties": {
+        "resource_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Resource Ids",
+          "type": "array"
+        },
+        "resource_type": {
+          "$ref": "#/$defs/ResourceType"
+        },
+        "subscriber_scope": {
+          "$ref": "#/$defs/SubscriberScope"
+        }
+      },
+      "required": [
+        "resource_type",
+        "resource_ids"
+      ],
+      "title": "ResourceScope",
+      "type": "object"
+    },
+    "ResourceType": {
+      "enum": [
+        "SLICE",
+        "CELL",
+        "QOS_FLOW",
+        "SESSION",
+        "UPF_RULE",
+        "ROUTE",
+        "SPECTRUM_RESOURCE",
+        "BEAM",
+        "NETWORK_API",
+        "SENSING_RESOURCE",
+        "OTHER"
+      ],
+      "title": "ResourceType",
+      "type": "string"
+    },
+    "Reversibility": {
+      "enum": [
+        "REVERSIBLE",
+        "PARTIALLY_REVERSIBLE",
+        "IRREVERSIBLE"
+      ],
+      "title": "Reversibility",
+      "type": "string"
+    },
+    "ScopeType": {
+      "enum": [
+        "NONE",
+        "SINGLE_SUBSCRIBER",
+        "SUBSCRIBER_GROUP",
+        "TENANT",
+        "SLICE",
+        "CELL_POPULATION"
+      ],
+      "title": "ScopeType",
+      "type": "string"
+    },
+    "SinkType": {
+      "enum": [
+        "UPF",
+        "CONTROL_PLANE_GATEWAY",
+        "RAN_CONTROL",
+        "O_RAN_E2",
+        "O_RAN_A1",
+        "NETWORK_API_GATEWAY",
+        "RF_ENABLE",
+        "SESSION_CONTROLLER",
+        "OTHER"
+      ],
+      "title": "SinkType",
+      "type": "string"
+    },
+    "SubscriberScope": {
+      "additionalProperties": false,
+      "properties": {
+        "scope_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scope Reference"
+        },
+        "scope_type": {
+          "$ref": "#/$defs/ScopeType",
+          "default": "NONE"
+        }
+      },
+      "title": "SubscriberScope",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "act_type": {
+      "$ref": "#/$defs/ActType"
+    },
+    "candidate_act_id": {
+      "minLength": 16,
+      "title": "Candidate Act Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "finality_sink": {
+      "$ref": "#/$defs/FinalitySinkDescriptor"
+    },
+    "freshness": {
+      "$ref": "#/$defs/Freshness"
+    },
+    "initiator": {
+      "$ref": "#/$defs/Initiator"
+    },
+    "network_context": {
+      "$ref": "#/$defs/NetworkContext"
+    },
+    "object_type": {
+      "const": "network_candidate_act",
+      "default": "network_candidate_act",
+      "title": "Object Type",
+      "type": "string"
+    },
+    "policy_state": {
+      "$ref": "#/$defs/PolicyState"
+    },
+    "purpose": {
+      "$ref": "#/$defs/Purpose"
+    },
+    "requested_effect": {
+      "$ref": "#/$defs/RequestedEffect"
+    },
+    "resource_scope": {
+      "$ref": "#/$defs/ResourceScope"
+    },
+    "version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "candidate_act_id",
+    "act_type",
+    "created_at",
+    "expires_at",
+    "initiator",
+    "network_context",
+    "resource_scope",
+    "purpose",
+    "requested_effect",
+    "policy_state",
+    "freshness",
+    "finality_sink"
+  ],
+  "title": "NetworkCandidateAct",
+  "type": "object"
+}

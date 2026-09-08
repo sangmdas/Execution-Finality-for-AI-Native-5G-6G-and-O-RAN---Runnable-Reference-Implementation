@@ -1,0 +1,1496 @@
+<?xml version='1.0' encoding='utf-8'?>
+<?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
+<rfc category="info" docName="draft-das-ai-native-6g-execution-finality-01"
+     ipr="trust200902" submissionType="IETF" xml:lang="en" version="3"
+     tocInclude="true" tocDepth="3" symRefs="true" sortRefs="true">
+  <front>
+    <title abbrev="AI-Native 5G/6G Finality">Execution-Finality for AI-Native 5G/6G and O-RAN</title>
+    <seriesInfo name="Internet-Draft" value="draft-das-ai-native-6g-execution-finality-01"/>
+    <author fullname="Sangam Das" initials="S." surname="Das">
+      <organization>Independent Inventor</organization>
+      <address>
+        <postal>
+          <city>Balasore</city>
+          <region>Odisha</region>
+          <code>756001</code>
+          <country>India</country>
+        </postal>
+        <email>info@sangamdas.com</email>
+      </address>
+    </author>
+    <date year="2026" month="August" day="27"/>
+    <area>Security</area>
+    <keyword>execution finality</keyword>
+    <keyword>6G</keyword>
+    <keyword>O-RAN</keyword>
+    <keyword>AI-RAN</keyword>
+    <keyword>network authorization</keyword>
+    <abstract>
+      <t>In programmable and AI-assisted mobile networks, successful
+      authentication of a network function or AI controller does not
+      establish authority for every routing, signaling, session,
+      resource-allocation, sensing, or subscriber-specific consequence
+      that the function can generate.</t>
+      <t>This document defines an informational execution-finality
+      profile for AI-native 5G, 5G-Advanced, IMT-2030/6G, O-RAN, and
+      AI-RAN environments. A proposed network operation is represented
+      as a Network Candidate Act and remains in a Non-Effective State
+      while a Protected Enforcement Domain validates act-specific
+      predicates. Protected validation evidence is committed before, or
+      atomically with, release of scoped non-bearer finality authority.
+      A Network Finality Sink at the enforcement boundary independently
+      verifies that authority immediately before live network state
+      changes.</t>
+      <t>The governing rule is that network authentication is not
+      network finality, and computation is not authority. This revision
+      also defines a JSON interoperability profile for Candidate Acts,
+      validation decisions, scoped authority, and sink verification.</t>
+    </abstract>
+  </front>
+  <middle>
+    <section anchor="intro">
+      <name>Introduction</name>
+      <t>Future telecommunications systems are increasingly
+      programmable, API-driven, AI-assisted, distributed,
+      sensing-aware, and autonomous. An authenticated network function,
+      Near-RT RIC xApp, rApp, orchestrator, or AI agent may be
+      permitted to participate in the network while lacking authority
+      to cause every possible live-network consequence.</t>
+      <t>Existing mobile-network security mechanisms answer an earlier
+      question: whether an entity may enter a domain, invoke an
+      interface, or obtain a token. Execution finality answers a later
+      question: whether one particular proposed operation may become
+      effective now, for this subscriber or resource, purpose, scope,
+      destination, jurisdiction, policy epoch, and enforcement
+      boundary.</t>
+      <t>This document specifies that later control as a two-boundary
+      architecture:</t>
+      <ol>
+        <li>A Protected Enforcement Domain (PED) validates a Candidate
+        Act and, only after committing protected validation evidence,
+        may release scoped non-bearer finality authority.</li>
+        <li>A Finality Sink at the actual effectuation boundary
+        independently verifies that authority immediately before the
+        live network state changes, then consumes or otherwise
+        invalidates the authority for unauthorized replay.</li>
+      </ol>
+      <t>The standards surface is deliberately narrow: a Network
+      Candidate Act plus a Network Finality Sink. This document does
+      not replace 3GPP authentication, O-RAN policy interfaces, or
+      ordinary routing procedures. It defines an additional
+      pre-effectuation gate for AI-mediated and other autonomous
+      network acts. A companion informational draft discusses the same
+      finality pattern outside the mobile-network profile
+      <xref target="I-D.das-ef-interop"/>.</t>
+    </section>
+
+    <section anchor="rfc2119">
+      <name>Requirements Language</name>
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+      "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT
+      RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
+      interpreted as described in BCP 14 <xref target="RFC2119"/>
+      <xref target="RFC8174"/> when, and only when, they appear in all
+      capitals, as shown here.</t>
+      <t>The protocol invariant is mandatory: failure to establish
+      current finality authority MUST NOT be converted into permission
+      to effectuate a protected network consequence.</t>
+    </section>
+
+    <section anchor="terminology">
+      <name>Terminology</name>
+      <dl newline="true">
+        <dt>Candidate Act</dt>
+        <dd>An operation that has been generated, selected, requested,
+        staged, scheduled, routed, or otherwise prepared but has not
+        yet been permitted to become consequence-bearing. A Candidate
+        Act MAY already be fully computed. Computation alone MUST NOT
+        cause effectuation.</dd>
+        <dt>Network Candidate Act</dt>
+        <dd>A Candidate Act whose intended consequence is a change to
+        live telecommunications state, including routing, signaling,
+        session, QoS, slice, RAN parameter, UPF rule, sensing, RF
+        enablement, or network-API effectuation.</dd>
+        <dt>Non-Effective State</dt>
+        <dd>A state in which the Candidate Act may exist, be
+        evaluated, staged, queued, hashed, transformed, or prepared,
+        but the protected consequence cannot yet become externally
+        effective.</dd>
+        <dt>Protected Enforcement Domain (PED)</dt>
+        <dd>A protected validation environment that evaluates whether
+        a Candidate Act is eligible to receive scoped finality
+        authority. The PED MAY be realized as a trusted execution
+        environment, secure enclave, HSM, protected operating-system
+        service, protected network function, confidential-computing
+        environment, or equivalent. The defining property is the
+        validation role, not a particular hardware product.</dd>
+        <dt>Protected Validation Evidence</dt>
+        <dd>Evidence committed by the PED establishing the validation
+        state associated with a Candidate Act. The evidence MAY be a
+        Ledger-Anchored Validation Receipt (LAVR) or an equivalent
+        protected commitment using hashes, signatures, MACs, sealed
+        state, monotonic counters, Merkle commitments, or append-only
+        protected records. External ledger anchoring is OPTIONAL and
+        is not required on the hot path.</dd>
+        <dt>Scoped Non-Bearer Finality Authority</dt>
+        <dd>An act-specific enablement artifact or protected
+        authorization state that permits a particular Candidate Act to
+        cross a particular effectuation boundary only under its
+        validated scope. Possession alone MUST NOT be sufficient to
+        cause effectuation.</dd>
+        <dt>Finality Sink</dt>
+        <dd>The functional boundary at which a Candidate Act would
+        become externally, operationally, or network-effectively
+        consequential. A gateway, firewall, or policy engine is not a
+        Finality Sink merely because it performs security checks. It
+        MUST control the consequence such that the consequence is
+        technically non-completable without successful finality
+        verification.</dd>
+        <dt>Network Finality Sink</dt>
+        <dd>A Finality Sink located at or associated with a carrier
+        gateway, UPF, control-plane function, session controller,
+        network API gateway, AI-RAN or O-RAN enforcement point,
+        signaling gateway, edge network function, or equivalent 6G
+        enforcement node.</dd>
+        <dt>Effectuation</dt>
+        <dd>The transition of a Candidate Act from Non-Effective State
+        into an actual change of live network, subscriber, sensing,
+        RF, or resource state.</dd>
+      </dl>
+    </section>
+
+    <section anchor="problem">
+      <name>Problem Scope</name>
+      <t>Traditional network security controls primarily determine who
+      may enter a system, who may invoke an API, and whether a network
+      function is authenticated. Those controls remain necessary. They
+      do not, by themselves, decide whether one already-generated
+      operation may become a live-network consequence.</t>
+      <t>That distinction matters more as control loops become
+      autonomous. An AI-RAN controller, RIC xApp, or orchestrator can
+      compute a resource reallocation, traffic-steering decision, or
+      sensing export without a human decision point immediately before
+      effectuation. Authentication of the controller answers "who are
+      you?". Execution finality answers "may this exact network act
+      become effective now?".</t>
+      <t>IMT-2030 work describes expected capabilities that widen the
+      consequence surface: native AI integration, distributed learning
+      and inference, integrated sensing and communication,
+      high-precision positioning, cloud-native and edge-native
+      architectures, network slicing, and heterogeneous
+      multi-stakeholder environments
+      <xref target="ITU-IMT2030"/> <xref target="ITU-T-IMT2030-SEC"/>.
+      In such an environment, location, presence, and subscriber
+      context may be derived from infrastructure measurements rather
+      than from a single application GPS API. Removing one
+      application's positioning permission therefore does not
+      necessarily control final disclosure or actuation.</t>
+      <t>This document does not claim that existing cybersecurity or
+      privacy controls will collapse. It claims that access-centric
+      assumptions are incomplete if they are relied upon without a
+      separate control over the transition from computation to
+      consequence.</t>
+    </section>
+
+    <section anchor="related">
+      <name>Relationship to Existing Mechanisms</name>
+      <t>Execution finality is intended to consume decisions from
+      existing systems, not to replace them. Those systems remain
+      inputs to PED validation. They do not replace independent
+      Finality Sink verification.</t>
+      <section>
+        <name>3GPP Authentication, SBA Authorization, and Policy</name>
+        <t>3GPP security for the 5G system, including network-function
+        authentication and service-based interface authorization
+        <xref target="TS33501"/>, establishes that an NF is a
+        recognized party and that it may invoke a service. Policy
+        Control Function decisions and related session-policy
+        procedures govern QoS and charging rules. Those mechanisms do
+        not inherently bind a one-shot, act-specific digest to a
+        particular sink identity, topology epoch, nonce, and
+        single-use consumption state immediately before a live RAN or
+        UPF mutation generated by an autonomous controller.</t>
+      </section>
+      <section>
+        <name>CAPIF, NEF, and Network APIs</name>
+        <t>Exposure frameworks such as CAPIF and the Network Exposure
+        Function authorize API clients and can constrain API
+        invocation. A permitted API call is still not, by itself,
+        proof that the resulting network effect remains valid for the
+        current topology and revocation epoch at the moment of
+        effectuation.</t>
+      </section>
+      <section>
+        <name>O-RAN A1, E2, and RIC Applications</name>
+        <t>O-RAN A1 carries policy from Non-RT RIC toward Near-RT RIC.
+        E2 carries control and information between Near-RT RIC and
+        E2 nodes <xref target="ORAN-ARCH"/>. An xApp or rApp that is admitted to the RIC and
+        authorized on A1/E2 may still generate a control that is
+        unsafe after a topology or configuration-epoch change, or that
+        exceeds a subscriber, slice, or jurisdiction scope not
+        encoded in the original policy object. A Finality Sink at the
+        E2 node or other RAN enforcement point can verify
+        act-bound authority at the last hop without replacing A1 or
+        E2.</t>
+      </section>
+      <section>
+        <name>What This Profile Adds</name>
+        <t>Relative to the mechanisms above, this profile adds:</t>
+        <ul>
+          <li>an explicit Non-Effective State for proposed network
+          acts;</li>
+          <li>protected evidence committed before or atomically with
+          authority issuance;</li>
+          <li>non-bearer authority bound to act digest, sink, scope,
+          freshness, and policy/revocation/topology epochs;</li>
+          <li>independent sink-side verification immediately before
+          live-state change; and</li>
+          <li>mandatory fail-closed behavior on mismatch, replay,
+          revocation, or uncertainty.</li>
+        </ul>
+      </section>
+    </section>
+
+    <section anchor="architecture">
+      <name>Architecture</name>
+      <section anchor="invariant">
+        <name>Core Invariant</name>
+        <t>A Candidate Act MUST NOT become consequence-bearing merely
+        because it has been generated, computed, selected, routed,
+        scheduled, delegated, authenticated, or permitted by an
+        upstream application or AI system.</t>
+        <t>A Candidate Act MUST remain in a Non-Effective State
+        until all of the following have occurred:</t>
+        <ol>
+          <li>a PED validates the applicable act-specific
+          predicates;</li>
+          <li>protected validation evidence is generated or
+          committed;</li>
+          <li>scoped non-bearer finality authority is released;</li>
+          <li>an applicable Finality Sink independently verifies that
+          authority; and</li>
+          <li>the finality authority and associated protected state
+          are consumed, invalidated, advanced, or otherwise made
+          unsuitable for unauthorized replay.</li>
+        </ol>
+        <t>This is a two-boundary architecture rather than a single
+        authorization gate. The first boundary determines whether
+        scoped finality authority may be created. The second
+        determines whether the consequence may actually occur.</t>
+        <figure>
+          <name>Execution-finality chain</name>
+          <artwork><![CDATA[
+Candidate Act
+     |
+     v
+Non-Effective State
+     |
+     v
+Protected Enforcement Domain
+     |
+     v
+Act-Specific Validation
+     |
+     v
+Protected Validation Evidence
+     |
+     v
+Scoped Non-Bearer Finality Authority
+     |
+     v
+Independent Finality Sink Verification
+     |
+     +------ FAILURE ------> remain non-effective
+     |
+     `------ SUCCESS
+                 |
+                 v
+          authority consumed
+                 |
+                 v
+        permitted consequence
+]]></artwork>
+        </figure>
+        <t>No individual element substitutes for this chain. A policy
+        engine, application permission, access token, attestation,
+        human approval, LAVR, or Finality Sink without act-bound
+        authority is insufficient by itself.</t>
+      </section>
+
+      <section anchor="non-effective">
+        <name>Non-Effective State</name>
+        <t>An implementation MUST preserve the Non-Effective State
+        whenever a required element of the execution-finality chain
+        is absent, invalid, stale, expired, revoked, replayed, already
+        consumed, act-mismatched, scope-mismatched, policy-mismatched,
+        jurisdiction-mismatched, protected-state-mismatched, or
+        Finality-Sink-mismatched.</t>
+        <t>Failure at a load-bearing point MUST leave the Candidate
+        Act non-effective. A warning or audit record alone is not
+        sufficient.</t>
+      </section>
+
+      <section anchor="descriptor">
+        <name>Candidate Act Descriptor</name>
+        <t>A conforming implementation SHOULD create or derive a
+        machine-verifiable descriptor for the Candidate Act before
+        effectuation. The precise serialization is defined for the
+        network profile in <xref target="json-profile"/>. A conceptual
+        descriptor includes:</t>
+        <ul>
+          <li>Candidate-Act-ID, Act-Type, Act-Digest</li>
+          <li>Initiating principal, application, agent, and
+          tool/function identifiers</li>
+          <li>Purpose, resource or data class, permitted scope, and
+          permitted consequence class</li>
+          <li>Destination and destination jurisdiction</li>
+          <li>Data precision and data-residency state, where
+          applicable</li>
+          <li>Policy, authority, and revocation epochs</li>
+          <li>Nonce, freshness state, and protected-state
+          reference</li>
+          <li>Validation-evidence reference, Finality-Sink-ID, and
+          effectuation-boundary identifier</li>
+        </ul>
+        <t>Not every field is required for every consequence class.
+        Data precision is particularly relevant to location or
+        sensitive-data release. Destination jurisdiction is relevant
+        to cross-border export. Tool or function identity is
+        important for agentic controllers. Permitted consequence class
+        distinguishes a model recommendation from a live network
+        mutation.</t>
+        <t>A Candidate Act SHOULD have a stable digest over its
+        load-bearing attributes. Changing a load-bearing attribute
+        MUST cause previously issued authority to fail verification
+        unless the changed operation is separately authorized.</t>
+      </section>
+
+      <section anchor="ped">
+        <name>First Boundary: PED Validation</name>
+        <t>Upon receiving or resolving a Candidate Act, the PED MUST
+        keep that act non-effective while validation is performed.
+        The PED SHOULD evaluate all predicates required by the
+        applicable consequence class. Predicates MAY include
+        authority, purpose, application and agent identity,
+        tool/function scope, instruction provenance, destination,
+        jurisdiction, data residency, data precision, policy epoch,
+        revocation state, freshness, nonce, protected state,
+        permitted consequence class, and Finality Sink identity.</t>
+        <t>PED approval alone MUST NOT make the Candidate Act
+        effective. Validation success is not external consequence.</t>
+        <section>
+          <name>Validation Success</name>
+          <t>If validation succeeds, the PED MUST:</t>
+          <ol>
+            <li>establish or confirm the applicable protected-state
+            transition;</li>
+            <li>generate or commit protected validation evidence;</li>
+            <li>bind that evidence to the applicable Candidate
+            Act;</li>
+            <li>bind the permitted scope and applicable Finality
+            Sink; and</li>
+            <li>release scoped non-bearer finality authority only
+            after, or atomically with, the evidence commitment.</li>
+          </ol>
+          <t>At this stage the Candidate Act remains non-effective.
+          The PED has authorized issuance of finality authority. It
+          has not yet caused effectuation.</t>
+        </section>
+        <section>
+          <name>Validation Failure</name>
+          <t>If validation fails, the PED MUST NOT release usable
+          finality authority. The implementation SHOULD create
+          protected denial state or denial evidence sufficient to
+          prevent unauthorized retry, replay, rollback, substitution,
+          or stale reuse where those risks apply. The implementation
+          MAY consume or lock a nonce, advance protected monotonic
+          state, generate a denial receipt, update revocation or
+          exposure state, quarantine the Candidate Act, or require
+          renewed authorization. The Candidate Act MUST remain
+          non-effective.</t>
+        </section>
+        <section>
+          <name>Evidence-Gated Progression</name>
+          <t>The system MUST NOT treat a simple Boolean result such as
+          ALLOW=TRUE as sufficient execution-finality authority. The
+          protected validation result is committed into protected
+          evidence before the act can proceed. A LAVR, where used, is
+          a pre-effectuation protected commitment, not a post-event
+          receipt. External blockchain finality is NOT required for
+          the hot path.</t>
+        </section>
+      </section>
+
+      <section anchor="authority">
+        <name>Scoped Non-Bearer Finality Authority</name>
+        <t>Following successful protected evidence commitment, the PED
+        MAY release an execution handle, capability fragment,
+        protected enablement state, or equivalent scoped non-bearer
+        finality authority. Regardless of representation, the
+        authority MUST be sufficiently constrained so that possession
+        alone cannot authorize arbitrary effectuation.</t>
+        <t>A conforming authority SHOULD be act-bound, evidence-bound,
+        state-bound, scope-bound, nonce- or freshness-bound,
+        epoch-bound, and sink-bound. Copying, observing, storing,
+        forwarding, or possessing the authority MUST NOT by itself
+        create authority for effectuation.</t>
+        <t>An authority issued for one act, sink, scope, destination,
+        precision level, policy state, or protected-state transition
+        MUST NOT be reusable as authority for another consequence.
+        Where single-use effectuation is intended, the authority MUST
+        be consumed, invalidated, or rendered unusable before or
+        atomically with successful effectuation.</t>
+      </section>
+
+      <section anchor="sink">
+        <name>Second Boundary: Independent Finality Sink Verification</name>
+        <t>The Finality Sink MUST NOT merely trust that the PED
+        previously approved the Candidate Act. It MUST independently
+        verify the applicable finality authority immediately before
+        effectuation.</t>
+        <t>The Finality Sink SHOULD verify, where applicable:
+        authority validity; Candidate Act identity or digest;
+        protected validation evidence; protected-state reference or
+        transition; scope; purpose; destination; jurisdiction; data
+        precision; nonce; freshness; policy epoch; revocation epoch;
+        consumption state; permitted consequence class;
+        effectuation-boundary identity; and Finality Sink
+        identity.</t>
+        <t>The Finality Sink MUST reject the Candidate Act if a
+        required verification fails. A failed verification MUST
+        prevent effectuation. It MUST NOT merely create an alert
+        while allowing the consequence to proceed. For a telecom
+        failure, no governed network consequence occurs. For a
+        location-export failure, exact coordinates are not
+        released.</t>
+      </section>
+
+      <section anchor="success">
+        <name>Successful Effectuation</name>
+        <t>If Finality Sink verification succeeds, the implementation
+        MUST ensure that the finality authority cannot be reused
+        outside its permitted semantics. For single-use operations,
+        consumption, invalidation, or protected-state advancement
+        SHOULD occur before or atomically with effectuation. The
+        implementation SHOULD also create sink-side finality evidence
+        identifying the completed protected consequence.</t>
+        <t>The execution sequence is:</t>
+        <ol>
+          <li>Candidate Act created</li>
+          <li>Candidate Act held non-effective</li>
+          <li>PED validates act-specific predicates</li>
+          <li>Protected validation evidence committed</li>
+          <li>Scoped non-bearer finality authority released</li>
+          <li>Finality Sink independently verifies authority</li>
+          <li>Authority or state consumed or advanced</li>
+          <li>Permitted consequence becomes effective</li>
+          <li>Sink-side finality evidence recorded</li>
+        </ol>
+      </section>
+    </section>
+
+    <section anchor="telecom-profile">
+      <name>AI-Native 5G/6G and O-RAN Profile</name>
+      <section>
+        <name>Telecom Candidate Acts</name>
+        <t>A telecom Candidate Act MAY include routing modification,
+        signaling operation, session establishment or modification,
+        resource allocation, service activation, slice orchestration,
+        network API invocation, traffic-steering decision, autonomous
+        optimization, machine-to-machine communication operation,
+        AI-RAN action, subscriber-specific network operation, sensing
+        operation, RF enablement, or another network-state
+        transition.</t>
+      </section>
+      <section>
+        <name>Example: AI-RAN Resource Reallocation</name>
+        <t>An AI network controller proposes a
+        NETWORK_RESOURCE_REALLOCATION for cell-108 and slice
+        emergency-services, with purpose congestion-optimization and
+        Finality Sink at a RAN enforcement boundary. The controller
+        may fully compute the optimization. The optimization remains a
+        Candidate Act. The PED validates the applicable network,
+        policy, subscriber, jurisdiction, resource, and authority
+        predicates. Only then may scoped finality authority be
+        released. The RAN enforcement point verifies that authority
+        immediately before the allocation becomes live.</t>
+      </section>
+      <section>
+        <name>Telecom Finality Sink Placement</name>
+        <t>Depending on deployment, a telecom Finality Sink MAY be
+        located at or associated with a carrier gateway, UPF,
+        control-plane function, session controller, network API
+        gateway, AI-RAN enforcement point, O-RAN E2 or A1-adjacent
+        enforcement logic, signaling gateway, edge network function,
+        or a future 6G enforcement node.</t>
+        <t>Carrier and 6G deployments may require near-line-rate
+        behavior. Such deployments MAY rely on local protected state,
+        cached short-lived policy, current revocation epoch,
+        sink-bound capabilities, SmartNIC or DPU enforcement, secure
+        network functions, or hardware-adjacent validation.
+        High-risk or anomalous operations SHOULD be escalated rather
+        than allowed as unverifiable network consequences.</t>
+      </section>
+    </section>
+
+    <section anchor="json-profile">
+      <name>JSON Interoperability Profile</name>
+      <t>This section defines a JSON interoperability profile for
+      AI-generated or AI-mediated network Candidate Acts. The schema
+      makes the proposed network effect, resource scope, subscriber
+      scope, network-function identity, policy state, and intended
+      Network Finality Sink explicit. This profile defines the
+      semantic contract. It does not require one transport.</t>
+      <t>Candidate Acts and finality authorities MAY be carried over
+      protected local IPC, operator-internal HTTPS, service-based
+      interfaces, O-RAN control interfaces, or other authenticated
+      transports. A transport binding MUST preserve object integrity,
+      sink identity, freshness, and the protected non-bearer
+      semantics of the authority.</t>
+
+      <section>
+        <name>NetworkCandidateAct Object</name>
+        <sourcecode type="json"><![CDATA[
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ietf:params:json-schema:network-finality:candidate-act:1",
+  "title": "NetworkCandidateAct",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "object_type",
+    "candidate_act_id",
+    "act_type",
+    "created_at",
+    "expires_at",
+    "initiator",
+    "network_context",
+    "resource_scope",
+    "purpose",
+    "requested_effect",
+    "policy_state",
+    "freshness",
+    "finality_sink"
+  ],
+  "properties": {
+    "version": { "type": "string", "const": "1.0" },
+    "object_type": { "type": "string", "const": "network_candidate_act" },
+    "candidate_act_id": { "type": "string", "minLength": 16 },
+    "act_type": {
+      "type": "string",
+      "enum": [
+        "ROUTE_CHANGE",
+        "SESSION_MODIFICATION",
+        "QOS_CHANGE",
+        "SLICE_RESOURCE_ALLOCATION",
+        "RAN_PARAMETER_CHANGE",
+        "POLICY_UPDATE",
+        "NETWORK_API_INVOCATION",
+        "UPF_RULE_CHANGE",
+        "BEAM_CHANGE",
+        "SENSING_OPERATION",
+        "RF_ENABLE",
+        "SERVICE_ACTIVATION",
+        "OTHER"
+      ]
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "initiator": {
+      "type": "object",
+      "required": ["network_function_id", "function_type"],
+      "properties": {
+        "network_function_id": { "type": "string" },
+        "function_type": {
+          "type": "string",
+          "enum": [
+            "AI_RAN_CONTROLLER",
+            "RIC_XAPP",
+            "RIC_RAPP",
+            "SMF",
+            "AMF",
+            "PCF",
+            "UPF_CONTROLLER",
+            "ORCHESTRATOR",
+            "NETWORK_API_CLIENT",
+            "EDGE_AGENT",
+            "OTHER"
+          ]
+        },
+        "agent_id": { "type": "string" },
+        "model_id": { "type": "string" },
+        "runtime_attestation_digest": { "type": "string" }
+      }
+    },
+    "network_context": {
+      "type": "object",
+      "properties": {
+        "plmn_id": { "type": "string" },
+        "network_domain": { "type": "string" },
+        "slice_id": { "type": "string" },
+        "cell_ids": { "type": "array", "items": { "type": "string" } },
+        "edge_region": { "type": "string" },
+        "jurisdiction": { "type": "string" }
+      }
+    },
+    "resource_scope": {
+      "type": "object",
+      "required": ["resource_type", "resource_ids"],
+      "properties": {
+        "resource_type": {
+          "type": "string",
+          "enum": [
+            "SLICE",
+            "CELL",
+            "QOS_FLOW",
+            "SESSION",
+            "UPF_RULE",
+            "ROUTE",
+            "SPECTRUM_RESOURCE",
+            "BEAM",
+            "NETWORK_API",
+            "SENSING_RESOURCE",
+            "OTHER"
+          ]
+        },
+        "resource_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "subscriber_scope": {
+          "type": "object",
+          "properties": {
+            "scope_type": {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "SINGLE_SUBSCRIBER",
+                "SUBSCRIBER_GROUP",
+                "TENANT",
+                "SLICE",
+                "CELL_POPULATION"
+              ]
+            },
+            "scope_reference": { "type": "string" }
+          }
+        }
+      }
+    },
+    "purpose": {
+      "type": "object",
+      "required": ["purpose_id", "declared_purpose"],
+      "properties": {
+        "purpose_id": { "type": "string" },
+        "declared_purpose": { "type": "string" },
+        "service_intent_reference": { "type": "string" },
+        "purpose_epoch": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "requested_effect": {
+      "type": "object",
+      "required": ["effect_type", "parameters_digest"],
+      "properties": {
+        "effect_type": { "type": "string" },
+        "parameters_digest": {
+          "type": "object",
+          "required": ["algorithm", "value"],
+          "properties": {
+            "algorithm": {
+              "type": "string",
+              "enum": ["SHA-256", "SHA-384", "SHA-512"]
+            },
+            "value": { "type": "string" }
+          }
+        },
+        "duration_seconds": { "type": "integer", "minimum": 0 },
+        "reversibility": {
+          "type": "string",
+          "enum": ["REVERSIBLE", "PARTIALLY_REVERSIBLE", "IRREVERSIBLE"]
+        }
+      }
+    },
+    "policy_state": {
+      "type": "object",
+      "required": ["policy_epoch", "authority_epoch", "revocation_epoch"],
+      "properties": {
+        "policy_epoch": { "type": "integer", "minimum": 0 },
+        "authority_epoch": { "type": "integer", "minimum": 0 },
+        "revocation_epoch": { "type": "integer", "minimum": 0 },
+        "operator_policy_profile": { "type": "string" },
+        "regulatory_profile": { "type": "string" }
+      }
+    },
+    "freshness": {
+      "type": "object",
+      "required": ["nonce"],
+      "properties": {
+        "nonce": { "type": "string", "minLength": 16 },
+        "sequence": { "type": "integer", "minimum": 0 },
+        "session_id": { "type": "string" }
+      }
+    },
+    "finality_sink": {
+      "type": "object",
+      "required": ["sink_id", "sink_type"],
+      "properties": {
+        "sink_id": { "type": "string" },
+        "sink_type": {
+          "type": "string",
+          "enum": [
+            "UPF",
+            "CONTROL_PLANE_GATEWAY",
+            "RAN_CONTROL",
+            "O_RAN_E2",
+            "O_RAN_A1",
+            "NETWORK_API_GATEWAY",
+            "RF_ENABLE",
+            "SESSION_CONTROLLER",
+            "OTHER"
+          ]
+        }
+      }
+    }
+  }
+}
+]]></sourcecode>
+      </section>
+
+      <section>
+        <name>NetworkValidationDecision Object</name>
+        <t>The protected network enforcement function evaluates whether
+        the proposed network consequence is valid for the current
+        network state. A successful AI recommendation or policy-engine
+        decision does not itself cause the network effect.</t>
+        <sourcecode type="json"><![CDATA[
+{
+  "version": "1.0",
+  "object_type": "network_validation_decision",
+  "decision_id": "nvd-1882bd",
+  "candidate_act_id": "net-39f8820b",
+  "decision": "ALLOW",
+  "validated_predicates": {
+    "initiator_attested": true,
+    "resource_scope_valid": true,
+    "subscriber_scope_valid": true,
+    "purpose_valid": true,
+    "requested_effect_valid": true,
+    "operator_policy_valid": true,
+    "regulatory_policy_valid": true,
+    "network_state_valid": true,
+    "policy_epoch_valid": true,
+    "revocation_state_valid": true,
+    "freshness_valid": true,
+    "sink_binding_valid": true
+  },
+  "network_state": {
+    "topology_epoch": 993,
+    "configuration_epoch": 771,
+    "slice_state": "ACTIVE",
+    "congestion_state": "NORMAL"
+  },
+  "protected_state": {
+    "state_reference": "net-ped-state-7801",
+    "monotonic_counter": 184991
+  }
+}
+]]></sourcecode>
+      </section>
+
+      <section>
+        <name>NetworkFinalityAuthority Object</name>
+        <sourcecode type="json"><![CDATA[
+{
+  "version": "1.0",
+  "object_type": "network_finality_authority",
+  "authority_id": "nfa-7f51ca",
+  "candidate_act_id": "net-39f8820b",
+  "decision_id": "nvd-1882bd",
+  "scope": {
+    "act_type": "SLICE_RESOURCE_ALLOCATION",
+    "resource_type": "SLICE",
+    "resource_ids": ["slice-17"],
+    "subscriber_scope": {
+      "scope_type": "TENANT",
+      "scope_reference": "tenant-A"
+    },
+    "permitted_effect": {
+      "effect_type": "ALLOCATE_CAPACITY",
+      "parameters_digest": "base64url-effect-digest",
+      "duration_seconds_max": 300
+    },
+    "network_domain": "ran-domain-2",
+    "jurisdiction": "IN"
+  },
+  "binding": {
+    "candidate_act_digest": {
+      "algorithm": "SHA-256",
+      "value": "base64url-net-act-digest"
+    },
+    "protected_state_reference": "net-ped-state-7801",
+    "topology_epoch": 993,
+    "configuration_epoch": 771,
+    "policy_epoch": 42,
+    "authority_epoch": 8,
+    "revocation_epoch": 7,
+    "nonce": "C3929177AA801C55",
+    "finality_sink_id": "ran-finality-sink-04"
+  },
+  "lifetime": {
+    "issued_at": "2026-08-26T17:50:01Z",
+    "expires_at": "2026-08-26T17:50:05Z",
+    "single_use": true
+  },
+  "issuer": {
+    "ped_id": "operator-ped-1",
+    "key_id": "operator-finality-key-4",
+    "signature": "base64url-signature"
+  }
+}
+]]></sourcecode>
+      </section>
+
+      <section>
+        <name>NetworkSinkVerify Request and Response</name>
+        <t>The Network Finality Sink verifies the actual requested
+        network effect immediately before the protected configuration,
+        forwarding, signaling, RF, or resource-allocation change
+        becomes effective.</t>
+        <sourcecode type="json"><![CDATA[
+{
+  "operation": "NetworkSinkVerify",
+  "request_id": "net-verify-991",
+  "candidate_act_id": "net-39f8820b",
+  "authority_id": "nfa-7f51ca",
+  "sink": {
+    "sink_id": "ran-finality-sink-04",
+    "sink_type": "RAN_CONTROL"
+  },
+  "proposed_effect": {
+    "effect_type": "ALLOCATE_CAPACITY",
+    "resource_type": "SLICE",
+    "resource_ids": ["slice-17"],
+    "parameters": {
+      "additional_prb_percent": 12,
+      "duration_seconds": 120
+    },
+    "parameters_digest": {
+      "algorithm": "SHA-256",
+      "value": "base64url-effect-digest"
+    }
+  },
+  "current_network_state": {
+    "topology_epoch": 993,
+    "configuration_epoch": 771
+  },
+  "freshness": {
+    "nonce": "C3929177AA801C55"
+  }
+}
+]]></sourcecode>
+        <sourcecode type="json"><![CDATA[
+{
+  "operation": "NetworkSinkVerify",
+  "request_id": "net-verify-991",
+  "decision": "ALLOW",
+  "verification": {
+    "authority_signature": "VALID",
+    "candidate_act_binding": "MATCH",
+    "initiator_scope": "MATCH",
+    "resource_scope": "MATCH",
+    "subscriber_scope": "MATCH",
+    "effect_parameters": "MATCH",
+    "topology_epoch": "CURRENT",
+    "configuration_epoch": "CURRENT",
+    "policy_epoch": "CURRENT",
+    "revocation_epoch": "CURRENT",
+    "nonce": "FRESH",
+    "consumption_state": "UNUSED",
+    "sink_binding": "MATCH"
+  },
+  "consumption": {
+    "authority_id": "nfa-7f51ca",
+    "status": "CONSUMED",
+    "consumed_at": "2026-08-26T17:50:02Z"
+  },
+  "effectuation": {
+    "permitted": true,
+    "network_effect_id": "net-effect-4481"
+  }
+}
+]]></sourcecode>
+      </section>
+
+      <section>
+        <name>Network-State Mismatch Denial</name>
+        <t>If the topology or configuration changes between protected
+        validation and effectuation, the sink can deny the stale
+        authority and require revalidation. This matters for
+        low-latency autonomous control because a valid decision for
+        one state may be unsafe in a later state.</t>
+        <sourcecode type="json"><![CDATA[
+{
+  "operation": "NetworkSinkVerify",
+  "request_id": "net-verify-992",
+  "decision": "DENY",
+  "error": {
+    "code": "EF_NETWORK_STATE_MISMATCH",
+    "message": "Configuration epoch differs from the bound authority epoch.",
+    "retryable": true
+  },
+  "verification": {
+    "authority_signature": "VALID",
+    "configuration_epoch_expected": 771,
+    "configuration_epoch_observed": 772,
+    "resource_scope": "MATCH",
+    "sink_binding": "MATCH"
+  },
+  "effectuation": {
+    "permitted": false,
+    "required_action": "REVALIDATE_CANDIDATE_ACT"
+  }
+}
+]]></sourcecode>
+      </section>
+
+      <section>
+        <name>Complete AI-RAN Resource Allocation Example</name>
+        <sourcecode type="json"><![CDATA[
+{
+  "step_1_ai_recommendation": {
+    "agent_id": "ai-ran-controller-7",
+    "recommendation": "Increase slice-17 radio capacity by 12% for 120s",
+    "effect_status": "NON_EFFECTIVE"
+  },
+  "step_2_candidate_act": {
+    "candidate_act_id": "net-39f8820b",
+    "act_type": "SLICE_RESOURCE_ALLOCATION",
+    "initiator": {
+      "network_function_id": "ai-ran-controller-7",
+      "function_type": "AI_RAN_CONTROLLER",
+      "agent_id": "ran-agent-7",
+      "model_id": "traffic-optimizer-v5"
+    },
+    "network_context": {
+      "plmn_id": "00101",
+      "network_domain": "ran-domain-2",
+      "slice_id": "slice-17",
+      "jurisdiction": "IN"
+    },
+    "resource_scope": {
+      "resource_type": "SLICE",
+      "resource_ids": ["slice-17"],
+      "subscriber_scope": {
+        "scope_type": "TENANT",
+        "scope_reference": "tenant-A"
+      }
+    },
+    "purpose": {
+      "purpose_id": "latency-optimization",
+      "declared_purpose": "Maintain latency SLO for tenant-A"
+    },
+    "requested_effect": {
+      "effect_type": "ALLOCATE_CAPACITY",
+      "parameters_digest": {
+        "algorithm": "SHA-256",
+        "value": "base64url-effect-digest"
+      },
+      "duration_seconds": 120,
+      "reversibility": "REVERSIBLE"
+    },
+    "policy_state": {
+      "policy_epoch": 42,
+      "authority_epoch": 8,
+      "revocation_epoch": 7,
+      "operator_policy_profile": "ran-autonomy-v3"
+    },
+    "freshness": {
+      "nonce": "C3929177AA801C55",
+      "sequence": 8821
+    },
+    "finality_sink": {
+      "sink_id": "ran-finality-sink-04",
+      "sink_type": "RAN_CONTROL"
+    }
+  },
+  "step_3_protected_validation": {
+    "decision": "ALLOW",
+    "topology_epoch": 993,
+    "configuration_epoch": 771
+  },
+  "step_4_authority": {
+    "authority_id": "nfa-7f51ca",
+    "single_use": true,
+    "expires_in_seconds": 4
+  },
+  "step_5_sink_verification": {
+    "decision": "ALLOW",
+    "authority_consumed": true
+  },
+  "step_6_network_effect": {
+    "slice_id": "slice-17",
+    "additional_prb_percent": 12,
+    "duration_seconds": 120,
+    "effect_status": "EFFECTIVE"
+  }
+}
+]]></sourcecode>
+      </section>
+    </section>
+
+    <section anchor="operation">
+      <name>Protocol Operation and Failure Handling</name>
+      <section>
+        <name>End-to-End Workflow</name>
+        <figure>
+          <name>PED and Finality Sink workflow</name>
+          <artwork><![CDATA[
+Act Generator             PED                    Finality Sink
+     |                      |                          |
+     |-- Candidate Act ---->|                          |
+     |                      |                          |
+     |   NON-EFFECTIVE      |                          |
+     |<---------------------|                          |
+     |                      |                          |
+     |                      |-- validate predicates    |
+     |                      |-- verify protected state |
+     |                      |-- verify nonce/epochs    |
+     |                      |                          |
+     |                      |   [DENY]                 |
+     |                      |---- denial evidence ---->|
+     |                      |   remains NON-EFFECTIVE  |
+     |                      |                          |
+     |                      |   [ALLOW]                |
+     |                      |-- commit evidence        |
+     |                      |-- create scoped          |
+     |                      |   finality authority     |
+     |                      |                          |
+     |---------------------- finality authority ------>|
+     |                                                 |
+     |                                   verify act    |
+     |                                   verify scope  |
+     |                                   verify nonce  |
+     |                                   verify state  |
+     |                                   verify epochs |
+     |                                   verify sink   |
+     |                                                 |
+     |                                   [FAIL]        |
+     |                                   no effect     |
+     |                                                 |
+     |                                   [PASS]        |
+     |                                   consume       |
+     |                                   authority     |
+     |<---------------- permitted consequence ---------|
+]]></artwork>
+        </figure>
+      </section>
+
+      <section>
+        <name>PED Processing</name>
+        <t>The following procedure is illustrative:</t>
+        <sourcecode type="pseudocode"><![CDATA[
+function PED_VALIDATE(candidate):
+    if candidate is malformed:
+        return DENY(MALFORMED_ACT)
+    if candidate.nonce is not fresh:
+        return DENY(REPLAY_OR_STALE)
+    if candidate.policy_epoch != current_policy_epoch:
+        return DENY(POLICY_EPOCH_MISMATCH)
+    if candidate.revocation_epoch != current_revocation_epoch:
+        return DENY(REVOCATION_STATE_MISMATCH)
+    if candidate.finality_sink_id is not authorized:
+        return DENY(SINK_NOT_AUTHORIZED)
+    if protected_state does not permit candidate:
+        return DENY(PROTECTED_STATE_DENIAL)
+    if purpose, jurisdiction, or scope checks fail:
+        return DENY(PREDICATE_DENIAL)
+    evidence = COMMIT_PROTECTED_VALIDATION(candidate)
+    authority = ISSUE_SCOPED_FINALITY_AUTHORITY(
+        candidate, evidence, current_protected_state)
+    return ALLOW(authority)
+]]></sourcecode>
+        <t>An implementation MAY evaluate additional predicates,
+        including attestation, instruction provenance, data residency,
+        accelerator identity, or cumulative disclosure state. The PED
+        MUST perform these checks while the Candidate Act remains
+        non-effective.</t>
+      </section>
+
+      <section>
+        <name>Finality Sink Verification</name>
+        <sourcecode type="pseudocode"><![CDATA[
+function FINALITY_SINK_VERIFY(candidate, authority):
+    if authority is absent:
+        return DENY(NO_FINALITY_AUTHORITY)
+    if authority integrity check fails:
+        return DENY(INVALID_AUTHORITY)
+    if HASH(candidate) != authority.candidate_act_digest:
+        return DENY(ACT_MISMATCH)
+    if authority.finality_sink_id != THIS_SINK:
+        return DENY(SINK_MISMATCH)
+    if authority is expired or already consumed:
+        return DENY(STALE_OR_USED)
+    if authority.nonce is not current:
+        return DENY(NONCE_FAILURE)
+    if authority epochs do not match current protected state:
+        return DENY(EPOCH_OR_STATE_MISMATCH)
+    if candidate exceeds authorized scope, destination,
+       jurisdiction, or precision:
+        return DENY(SCOPE_OR_CONTEXT_MISMATCH)
+    ATOMICALLY:
+        consume(authority)
+        advance_replay_state()
+        permit_effectuation()
+    return EFFECTUATED
+]]></sourcecode>
+      </section>
+
+      <section>
+        <name>Authority Consumption, Replay, and Revocation</name>
+        <t>For a single-use operation, successful authority
+        consumption SHOULD be atomic with the state transition that
+        enables effectuation. An implementation MUST prevent verify-
+        then-effectuate-then-replay of the same authority. Replay
+        protection MAY use nonce consumption, monotonic counters,
+        sequence numbers, protected consumed flags, protected-state
+        advancement, short expiration windows, epoch advancement, or
+        an equivalent mechanism.</t>
+        <t>A previously issued authority MUST NOT override a newer
+        revocation state. If an authority was created under
+        Revocation-Epoch 51 and the applicable protected state has
+        advanced to Revocation-Epoch 52, the older authority SHOULD
+        fail unless an explicitly defined policy permits continued
+        validity. Revocation SHOULD be checked at the Finality Sink,
+        not merely when the authority was originally created.</t>
+        <t>The same principle applies to policy epochs. An authority
+        issued before a material policy change SHOULD NOT silently
+        inherit authority under the new policy state. Examples include
+        a newly prohibited location-export precision, a revoked AI
+        tool, a telecom action removed from authorized scope, a
+        changed data-residency rule, or a withdrawn model version.</t>
+      </section>
+
+      <section>
+        <name>Hot Path and Cold Path</name>
+        <t>Not every Candidate Act requires identical validation cost.
+        A hot path MAY be used for frequent, previously bounded,
+        low-risk, or latency-sensitive classes of acts, relying on
+        local protected state, fresh nonce state, cached policy,
+        short-lived authority, pre-bound sink identity, and current
+        revocation epoch. A hot-path operation MUST still perform
+        Finality Sink verification. "Hot path" does not mean "skip
+        finality."</t>
+        <t>A Candidate Act SHOULD be escalated to a cold or
+        higher-assurance path where it involves exact location
+        export, high-value sovereign data export, cross-jurisdiction
+        processing, RF emission, actuator-class control,
+        cryptographic-key release, unusual agent behavior, unknown
+        tool delegation, changed destination, uncertain jurisdiction,
+        policy anomaly, missing cached state, or high-consequence
+        infrastructure operation.</t>
+        <t>A Candidate Act MUST NOT obtain default permission merely
+        because the hot path cannot make a decision. Cache miss,
+        policy miss, revocation uncertainty, network failure, unknown
+        destination, unknown jurisdiction, changed sink, changed tool,
+        or runtime anomaly SHOULD result in cold-path escalation,
+        delay, downgrade, or denial. Timeout, cache miss, or
+        uncertainty MUST NOT create default authority.</t>
+        <t>A successful cold-path evaluation MAY establish a bounded
+        policy envelope for subsequent low-latency operations. Later
+        Candidate Acts within that exact envelope MAY use faster local
+        validation. If any bound condition changes, the system SHOULD
+        escalate again.</t>
+        <t>Execution finality SHOULD be implementable without a remote
+        ledger round trip for every operation. Representative local
+        paths may operate in the millisecond range; stronger
+        attestation or multi-party validation may take longer. These
+        figures are implementation examples, not protocol
+        requirements. External anchoring can strengthen later
+        evidence. It MUST NOT retroactively authorize an act that was
+        not valid when effectuation occurred.</t>
+      </section>
+
+      <section>
+        <name>Failure Codes</name>
+        <t>The following identifiers are protocol-design suggestions
+        and are not IANA assignments. A conforming implementation MAY
+        expose equivalent numeric or symbolic codes.</t>
+        <ul>
+          <li>EF-001 MALFORMED_ACT</li>
+          <li>EF-002 NO_FINALITY_AUTHORITY</li>
+          <li>EF-003 INVALID_AUTHORITY</li>
+          <li>EF-004 STALE_AUTHORITY</li>
+          <li>EF-005 AUTHORITY_ALREADY_USED</li>
+          <li>EF-006 REPLAY_DETECTED</li>
+          <li>EF-007 NONCE_FAILURE</li>
+          <li>EF-010 ACT_MISMATCH</li>
+          <li>EF-011 DESCRIPTOR_MISMATCH</li>
+          <li>EF-012 SCOPE_MISMATCH</li>
+          <li>EF-013 PURPOSE_MISMATCH</li>
+          <li>EF-014 CONSEQUENCE_CLASS_MISMATCH</li>
+          <li>EF-020 DESTINATION_MISMATCH</li>
+          <li>EF-021 JURISDICTION_MISMATCH</li>
+          <li>EF-022 DATA_RESIDENCY_MISMATCH</li>
+          <li>EF-023 PRECISION_MISMATCH</li>
+          <li>EF-030 POLICY_EPOCH_MISMATCH</li>
+          <li>EF-031 REVOCATION_STATE_MISMATCH</li>
+          <li>EF-032 PROTECTED_STATE_MISMATCH</li>
+          <li>EF-033 NETWORK_STATE_MISMATCH</li>
+          <li>EF-040 SINK_MISMATCH</li>
+          <li>EF-041 EFFECTUATION_BOUNDARY_MISMATCH</li>
+          <li>EF-050 ATTESTATION_FAILURE</li>
+          <li>EF-060 VALIDATION_TIMEOUT</li>
+          <li>EF-061 AUTHORITY_UNCERTAIN</li>
+          <li>EF-062 POLICY_UNAVAILABLE</li>
+          <li>EF-063 JURISDICTION_UNRESOLVED</li>
+          <li>EF-070 ESCALATION_REQUIRED</li>
+          <li>EF-080 FAIL_CLOSED</li>
+        </ul>
+        <t>A denial response MAY specify an allowed remediation, such
+        as downgrade of precision, escalation to a cold path, or
+        requirement for fresh authority. Permitted denial actions MAY
+        include deny, delay, downgrade, redact, suppress, quarantine,
+        request new authority, escalate, or route for review.</t>
+      </section>
+
+      <section>
+        <name>Fail-Closed Requirements</name>
+        <t>A conforming implementation MUST fail closed for a
+        protected consequence when required execution-finality state
+        cannot be verified. Failure prevents consequence rather than
+        merely documenting that an unauthorized consequence
+        occurred.</t>
+        <t>A timeout MUST NOT be interpreted as approval. Verification
+        timeout is not permission. The implementation MAY retry within
+        policy, escalate, delay, downgrade, or deny. If no permitted
+        resolution is available, the Candidate Act remains
+        non-effective.</t>
+        <t>An implementation MUST consider alternate paths capable of
+        producing the same protected consequence. Moving the act to a
+        different interface, plugin, interconnect, or network function
+        MUST NOT inherently remove the execution-finality requirement
+        if that path can produce the same protected consequence.
+        Routing around a cold path, using stale cached authority,
+        fragmenting an act, relocating the Finality Sink, or moving
+        effectuation to another component does not create a
+        bypass.</t>
+      </section>
+    </section>
+
+    <section anchor="security">
+      <name>Security Considerations</name>
+      <t>The principal security objective is that a protected
+      consequence MUST remain technically non-effective unless
+      current, act-specific, scoped authority is verified at the
+      applicable Finality Sink. Implementations MUST consider attacks
+      against every load-bearing element of the finality chain.</t>
+      <section>
+        <name>Replay</name>
+        <t>An attacker may attempt to reuse a previously valid
+        finality authority after the original act has completed.
+        Finality authority SHOULD therefore be bound to Candidate Act
+        identity or digest, nonce, sequence state, policy and
+        revocation epochs, protected state, scope, Finality Sink
+        identity, and consumption state. Single-use authority MUST be
+        consumed or otherwise made unusable before or atomically with
+        effectuation.</t>
+      </section>
+      <section>
+        <name>Candidate Act Substitution</name>
+        <t>An attacker may obtain valid authority for one Candidate
+        Act and attempt to substitute a different operation, for
+        example replacing coarse location with precise coordinates,
+        one tool with another, or one resource allocation with a
+        broader change. The Finality Sink MUST verify that the actual
+        consequence corresponds to the act or digest bound to the
+        authority.</t>
+      </section>
+      <section>
+        <name>Sink Substitution</name>
+        <t>Authority issued for one Finality Sink MUST NOT
+        automatically be usable at another sink. A Finality Sink MUST
+        verify its own identity or protected boundary identity against
+        the authority before effectuation.</t>
+      </section>
+      <section>
+        <name>Stale Policy, Revocation, and Protected State</name>
+        <t>An act MAY have been valid when created but invalid when
+        effectuation is attempted. The Finality Sink SHOULD verify
+        current policy and revocation state immediately before
+        consequence. An old upstream approval MUST NOT automatically
+        override current protected state.</t>
+        <t>An attacker may attempt rollback, deletion of consumed
+        state, nonce reset, epoch rollback, stale snapshot
+        restoration, or protected-state substitution. High-assurance
+        implementations SHOULD use protected monotonic state, sealed
+        storage, secure counters, or authenticated state transitions
+        where rollback could produce a consequence.</t>
+      </section>
+      <section>
+        <name>Failure of the PED or Finality Sink</name>
+        <t>The PED is security-critical. If its integrity cannot be
+        established, the implementation SHOULD NOT release finality
+        authority for protected consequence classes. Depending on
+        risk class, the system MAY fail closed, downgrade, quarantine,
+        require another protected validator, require human approval,
+        move to a cold path, or disable the protected consequence.</t>
+        <t>The Finality Sink is equally load-bearing. An upstream PED
+        cannot compensate for a sink that permits consequence without
+        checking authority. A Finality Sink without act-bound
+        authority is not equivalent to the architecture described
+        here.</t>
+      </section>
+    </section>
+
+    <section anchor="deployment">
+      <name>Deployment Considerations</name>
+      <t>The architecture is an additional finality-control mechanism,
+      not a replacement for ordinary telecommunications
+      authentication, authorization, or routing procedures. In
+      AI-native 5G, 5G-Advanced, O-RAN, and future 6G environments,
+      possible Finality Sink locations include the UPF, carrier
+      gateway, network API gateway, control-plane interface,
+      signaling gateway, session-control function, O-RAN enforcement
+      point, AI-RAN control boundary, packet-egress boundary, or
+      another consequence-bearing network function.</t>
+      <t>A valid network identity demonstrates that an entity is
+      recognized. It does not necessarily establish authority for
+      this act, purpose, subscriber, destination, jurisdiction, time,
+      policy state, and consequence. Authentication SHOULD NOT be
+      treated as universal network-consequence authority.</t>
+      <t>This profile MAY consume decisions or evidence from identity
+      systems, OAuth and access-control systems, RBAC, policy
+      engines, AI safety systems, attestation systems, telecom
+      authentication, enterprise policy, regulatory policy, human
+      approval, and risk engines. Those systems provide inputs to
+      finality validation. They do not replace Finality Sink
+      verification.</t>
+    </section>
+
+    <section anchor="iana">
+      <name>IANA Considerations</name>
+      <t>This document requests no IANA actions. It does not define a
+      new IP protocol number, transport port, DNS record type, media
+      type, URI scheme, or mandatory global registry.</t>
+      <t>If later versions standardize wire-format fields, error
+      codes, consequence classes, precision classes, capability types,
+      or protocol parameters, an IANA registry MAY be proposed at
+      that time. The EF-xxx failure identifiers in this document are
+      illustrative and are not IANA assignments.</t>
+    </section>
+
+    <section anchor="ipr-note">
+      <name>Intellectual Property Note</name>
+      <t>Certain technical concepts described in this document are
+      associated with pending patent applications in the DAS
+      Protocols family, including PCT/IB2026/054453,
+      PCT/IB2026/055615, PCT/IB2026/055760, PCT/IB2026/055870,
+      PCT/IB2026/056058, and PCT/IB2026/053385. Any IETF
+      intellectual-property disclosure required in connection with
+      this work should be handled in accordance with BCP 79
+      <xref target="RFC8179"/>. This section is informational and
+      does not define licensing terms.</t>
+    </section>
+
+    <section anchor="conclusion">
+      <name>Conclusion</name>
+      <t>In AI-native telecommunications, network identity and
+      upstream policy approval should not automatically become
+      authority for a live network consequence. A proposed network
+      operation remains non-effective until protected validation,
+      evidence commitment, scoped finality authority, and independent
+      sink verification complete successfully. Network authentication
+      is not network finality. Computation is not authority.</t>
+    </section>
+  </middle>
+
+  <back>
+    <references>
+      <name>Normative References</name>
+      <reference anchor="RFC2119" target="https://www.rfc-editor.org/info/rfc2119">
+        <front>
+          <title>Key words for use in RFCs to Indicate Requirement Levels</title>
+          <author initials="S." surname="Bradner" fullname="S. Bradner">
+            <organization>Harvard University</organization>
+          </author>
+          <date year="1997" month="March"/>
+        </front>
+        <seriesInfo name="BCP" value="14"/>
+        <seriesInfo name="RFC" value="2119"/>
+        <seriesInfo name="DOI" value="10.17487/RFC2119"/>
+      </reference>
+      <reference anchor="RFC8174" target="https://www.rfc-editor.org/info/rfc8174">
+        <front>
+          <title>Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</title>
+          <author initials="B." surname="Leiba" fullname="B. Leiba"/>
+          <date year="2017" month="May"/>
+        </front>
+        <seriesInfo name="BCP" value="14"/>
+        <seriesInfo name="RFC" value="8174"/>
+        <seriesInfo name="DOI" value="10.17487/RFC8174"/>
+      </reference>
+      <reference anchor="RFC8179" target="https://www.rfc-editor.org/info/rfc8179">
+        <front>
+          <title>Intellectual Property Rights in IETF Technology</title>
+          <author initials="S." surname="Bradner" fullname="S. Bradner"/>
+          <author initials="J." surname="Contreras" fullname="J. Contreras"/>
+          <date year="2017" month="May"/>
+        </front>
+        <seriesInfo name="BCP" value="79"/>
+        <seriesInfo name="RFC" value="8179"/>
+        <seriesInfo name="DOI" value="10.17487/RFC8179"/>
+      </reference>
+    </references>
+    <references>
+      <name>Informative References</name>
+      <reference anchor="ITU-IMT2030" target="https://www.itu.int/rec/R-REC-M.2160">
+        <front>
+          <title>Framework and overall objectives of the future development of IMT for 2030 and beyond</title>
+          <author>
+            <organization>ITU-R</organization>
+          </author>
+          <date year="2023" month="November"/>
+        </front>
+        <seriesInfo name="Recommendation" value="ITU-R M.2160-0"/>
+      </reference>
+      <reference anchor="ITU-T-IMT2030-SEC">
+        <front>
+          <title>Technical security controls for IMT-2030 networks</title>
+          <author>
+            <organization>ITU-T</organization>
+          </author>
+          <date year="2024"/>
+        </front>
+        <annotation>ITU-T security study work addressing expanded attack surface and trust boundaries for native-AI, cloud-native, slicing, and integrated sensing environments.</annotation>
+      </reference>
+      <reference anchor="TS33501">
+        <front>
+          <title>Security architecture and procedures for 5G System</title>
+          <author>
+            <organization>3GPP</organization>
+          </author>
+          <date year="2024"/>
+        </front>
+        <seriesInfo name="3GPP" value="TS 33.501"/>
+      </reference>
+      <reference anchor="ORAN-ARCH">
+        <front>
+          <title>O-RAN Architecture Description</title>
+          <author>
+            <organization>O-RAN Alliance</organization>
+          </author>
+          <date year="2026"/>
+        </front>
+      </reference>
+      <reference anchor="I-D.das-ef-interop">
+        <front>
+          <title>Execution-Finality for AI Interoperability</title>
+          <author fullname="Sangam Das" initials="S." surname="Das"/>
+          <date year="2026" month="August"/>
+        </front>
+        <seriesInfo name="Internet-Draft" value="draft-das-execution-finality-ai-interoperability-00"/>
+      </reference>
+    </references>
+  </back>
+</rfc>

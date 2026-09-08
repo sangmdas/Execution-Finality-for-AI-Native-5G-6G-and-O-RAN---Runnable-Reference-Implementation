@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-native-6g-execution-finality-reference"
+version = "0.1.0"
+description = "Runnable reference implementation of execution-finality for AI-native 5G/6G and O-RAN"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "Sangam Das"}]
+dependencies = [
+  "pydantic>=2.7,<3",
+  "cryptography>=42,<47",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+network-finality-demo = "network_finality.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+pythonpath = ["src"]

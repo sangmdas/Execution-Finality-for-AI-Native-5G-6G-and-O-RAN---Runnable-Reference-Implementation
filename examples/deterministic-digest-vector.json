@@ -1,0 +1,10 @@
+{
+  "candidate_act_digest_base64url": "SEg6vWgwKlYiVBGV_XGMo_D66QuQ16uCnzgb7yVbj_w",
+  "canonicalization": "UTF-8 JSON, recursively sorted object keys, compact separators",
+  "effect_parameters": {
+    "additional_prb_percent": 12,
+    "duration_seconds": 120
+  },
+  "effect_parameters_digest_base64url": "202iqkOl0egmoF5Dlv4DYT45Fz7hKdu-Gsdgajlx9dA",
+  "hash": "SHA-256"
+}
