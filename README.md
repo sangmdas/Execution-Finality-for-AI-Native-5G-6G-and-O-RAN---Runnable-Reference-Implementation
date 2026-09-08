@@ -772,6 +772,1013 @@ draft/draft-das-ai-native-6g-execution-finality-01.xml
 
 ---
 
-## 22. Suggested GitHub short description
+# License, Patent Rights, Research Use, and 6G Research Positioning
 
-**Runnable vendor-neutral reference implementation of act-bound, sink-verified execution finality for AI-native 5G/6G, AI-RAN and O-RAN, with protected evidence, non-bearer authority, replay/epoch controls, telecom variations, 79 tests and benchmark tooling.**
+## Copyright License — CC BY-NC 4.0
+
+Unless a particular file states otherwise, the original copyrightable material in this repository is made available under the:
+
+**Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).**
+
+Subject to the terms of CC BY-NC 4.0, users may:
+
+* read and study the material;
+* copy and redistribute the material;
+* reproduce examples for research or educational purposes;
+* modify or adapt the material;
+* experimentally implement the reference architecture for non-commercial research;
+* cite the work in academic, standards, engineering, security, interoperability, or policy discussions; and
+* use the material for evaluation, testing, benchmarking, teaching, technical review, or other non-commercial research purposes.
+
+The following conditions apply:
+
+### Attribution
+
+Appropriate credit must be provided to:
+
+**Sangam Das — Independent Inventor**
+
+Where reasonably possible, attribution should identify this repository and the associated technical work.
+
+Modified versions should clearly indicate that modifications have been made.
+
+Attribution must not imply endorsement, certification, partnership, sponsorship, or approval by the author.
+
+### NonCommercial
+
+The CC BY-NC 4.0 copyright license permits use of the licensed copyright material only for purposes that are not primarily intended for commercial advantage or monetary compensation.
+
+Commercial users should obtain separate permission where required.
+
+---
+
+# Important: Copyright License Does Not Grant Patent Rights
+
+**CC BY-NC 4.0 is a copyright license. It does not grant a patent license.**
+
+Patent and trademark rights are expressly outside the patent grant of the CC BY-NC 4.0 license.
+
+Accordingly, publication of:
+
+* source code;
+* JSON schemas;
+* test vectors;
+* protocol examples;
+* pseudocode;
+* diagrams;
+* benchmark results;
+* implementation examples;
+* Internet-Draft material;
+* architectural descriptions; or
+* interoperability demonstrations
+
+does not grant a license to practice any patent claim that may cover an implementation.
+
+Certain concepts described or demonstrated in this repository may relate to pending patent applications in the DAS Protocols family.
+
+The associated Internet-Draft identifies pending patent applications and states that applicable IETF intellectual-property disclosures should be handled according to the relevant IETF IPR framework.
+
+Therefore:
+
+**Copyright permission to read, study, reproduce, adapt, or experimentally evaluate this repository does not automatically constitute permission to commercially implement patented technology.**
+
+Commercial implementation, incorporation into commercial telecommunications products, silicon, network infrastructure, network functions, software platforms, cloud systems, RAN equipment, network accelerators, or other commercial products may require separate permission or licensing where applicable patent rights exist.
+
+Nothing in this README constitutes:
+
+* a FRAND commitment;
+* a royalty-free patent commitment;
+* a patent waiver;
+* an exhaustion statement;
+* a covenant not to sue;
+* an implied patent license;
+* a trademark license;
+* a standards-essentiality determination;
+* a patent-validity opinion; or
+* a freedom-to-operate opinion.
+
+Any standards-related patent licensing position should be established separately through the applicable standards/IPR process.
+
+---
+
+# Software-License Clarification
+
+The repository contains executable reference software as well as documentation.
+
+Creative Commons licenses are primarily copyright licenses and are not conventional software-development licenses.
+
+The use of CC BY-NC 4.0 here communicates permission for **non-commercial research, study, reproduction, evaluation, adaptation, teaching, standards analysis, and technical experimentation**.
+
+CC BY-NC 4.0 does not provide every provision normally found in a production software license.
+
+Production or commercial deployment should therefore be subject to an appropriate separate agreement where required.
+
+---
+
+# No Warranty / Research Code
+
+This repository is a research and reference implementation.
+
+THE MATERIAL IS PROVIDED FOR RESEARCH AND EVALUATION PURPOSES WITHOUT WARRANTY OF ANY KIND.
+
+No representation is made that this implementation is:
+
+* production ready;
+* carrier certified;
+* formally verified;
+* 3GPP conformant;
+* O-RAN certified;
+* IMT-2030 compliant;
+* suitable for safety-critical deployment;
+* suitable for live telecommunications infrastructure;
+* resistant to every attack;
+* free of software defects; or
+* capable of meeting a particular commercial latency or throughput target.
+
+Independent engineering, security review, performance validation, standards analysis, and legal review are required before production deployment.
+
+---
+
+# Research Positioning
+
+## The Industry Direction Toward 6G
+
+This architecture should be understood in the context of where the telecommunications industry is already moving.
+
+The broad direction of 6G is increasingly clear:
+
+```text
+5G / 5G-Advanced
+        |
+        v
+Cloud-native telecommunications
+        |
+        v
+AI-assisted networks
+        |
+        v
+AI-native RAN and Core
+        |
+        v
+Distributed AI + Edge Compute
+        |
+        v
+Integrated Sensing + Communication
+        |
+        v
+Intent-aware / Context-aware networking
+        |
+        v
+Agentic and increasingly autonomous networks
+```
+
+ITU's IMT-2030 framework includes both **Artificial Intelligence and Communication (AIAC)** and **Integrated Sensing and Communication (ISAC)** among its six proposed 6G usage scenarios.
+
+3GPP Release 20 has also established a formal study titled **"Study on the Protocol for Artificial Intelligence in 6G" (TR 29.832)**, demonstrating that AI integration is already entering concrete 6G protocol study.
+
+The question addressed by this repository is not whether AI will become part of 6G. That direction is already well established.
+
+The research question is:
+
+> **As AI becomes capable of generating and executing increasingly consequential network operations, what provides final technical authority over the transition from an AI computation to a live telecommunications consequence?**
+
+---
+
+# Qualcomm's Public 6G Direction
+
+Qualcomm publicly describes 6G as an **AI-native platform combining connectivity, sensing, and compute** across devices, RAN, core, edge, and cloud.
+
+Its public 6G work includes areas such as:
+
+* AI-native device/RAN/core architecture;
+* context-aware networking;
+* intent-aware networking;
+* dynamic QoS;
+* autonomous UE adaptation;
+* AI-RAN;
+* distributed compute;
+* wide-area sensing;
+* Giga-MIMO;
+* advanced radio technologies;
+* power-efficient telco compute;
+* RAN acceleration;
+* autonomous network management; and
+* agentic services.
+
+Qualcomm specifically describes devices making autonomous adaptations within network-defined guardrails, with intelligence distributed across device, RAN, and core.
+
+Qualcomm is therefore solving extremely important questions such as:
+
+```text
+How should 6G communicate?
+
+How should 6G use spectrum?
+
+How should AI improve RAN performance?
+
+How should devices and networks adapt dynamically?
+
+How should sensing, compute and connectivity converge?
+
+How should AI optimize resource allocation?
+
+How should autonomous networks operate efficiently?
+```
+
+## Where Execution Finality Is Different
+
+Execution finality addresses a later question:
+
+```text
+The AI has already computed an action.
+
+The controller is already authenticated.
+
+The network function may already be authorized.
+
+The requested interface may already be legitimate.
+
+The policy system may already have returned ALLOW.
+
+             ↓
+
+MAY THIS EXACT COMPUTED ACTION
+BECOME A LIVE NETWORK CONSEQUENCE
+RIGHT NOW?
+```
+
+The proposed architecture therefore introduces another state transition:
+
+```text
+Computation
+     |
+     v
+Candidate Act
+     |
+     v
+NON-EFFECTIVE STATE
+     |
+     v
+Protected Enforcement Domain
+     |
+     v
+Act-Specific Validation
+     |
+     v
+Protected Validation Evidence
+     |
+     v
+Scoped / Bounded Non-Bearer
+Finality Authority
+     |
+     v
+Independent Finality Sink
+Verification
+     |
+     +------ FAIL ------> NO EFFECT
+     |
+     `------ PASS
+              |
+              v
+       Authority Consumed
+              |
+              v
+       Network Consequence
+```
+
+Qualcomm's public roadmap is primarily concerned with enabling and optimizing intelligent 6G operation. Execution finality focuses specifically on controlling the final transition from that intelligent computation into externally effective authority — not on building another AI-native 6G platform alongside it.
+
+---
+
+# Huawei's Public 6G Direction
+
+Huawei's public 6G work is particularly relevant because it already addresses both **agentic networking** and **native trustworthiness**.
+
+Huawei describes 6G native trustworthiness around three major pillars:
+
+* security;
+* privacy; and
+* resilience.
+
+Its public research discusses distributed trust, continuous trustworthiness, lifecycle security, privacy-preserving technologies, attestation-related concepts, and broader trust architectures for highly distributed 6G systems.
+
+Huawei has also publicly described an **Agentic Core Network** in which AI can:
+
+* detect user needs;
+* predict intent;
+* generate services;
+* execute services;
+* coordinate through multiple agents; and
+* continuously optimize those services.
+
+This makes the execution-finality question especially relevant.
+
+An autonomous network architecture creates a transition resembling:
+
+```text
+Observe
+   ↓
+Infer
+   ↓
+Predict
+   ↓
+Plan
+   ↓
+Generate Action
+   ↓
+Execute Action
+```
+
+Execution finality inserts a load-bearing boundary between the final two stages:
+
+```text
+Observe
+   ↓
+Infer
+   ↓
+Predict
+   ↓
+Plan
+   ↓
+Generate Candidate Act
+   ↓
+NON-EFFECTIVE
+   ↓
+Validate Exact Consequence
+   ↓
+Issue Scoped Finality Authority
+   ↓
+Verify at Consequence Boundary
+   ↓
+Execute
+```
+
+## The Difference from Huawei's Native Trustworthiness Work
+
+Huawei's public work describes a broad 6G trustworthiness architecture covering security, privacy, resilience, trust relationships, risk management, and supporting technologies.
+
+Execution finality is narrower. It isolates one particular systems invariant:
+
+> **A computed operation must remain technically non-effective until current, act-specific authority has been validated and independently verified at the boundary where the consequence would actually occur.**
+
+The research therefore attempts to turn broad concepts such as:
+
+```text
+trust
+policy
+authorization
+AI governance
+attestation
+security
+```
+
+into an additional concrete execution rule:
+
+```text
+NO CURRENT FINALITY
+        =
+NO PROTECTED CONSEQUENCE
+```
+
+---
+
+# Ericsson's Public 6G Direction
+
+Ericsson describes 6G as an **AI-native intelligent fabric** connecting AI, cloud, compute, mobile infrastructure, sensing, and increasingly autonomous systems.
+
+Its public 6G material discusses:
+
+* AI-native networks;
+* autonomous network operations;
+* intelligence throughout network layers;
+* distributed AI agents;
+* sensing;
+* positioning;
+* digital twins;
+* network exposure; and
+* machine-timescale autonomous operation.
+
+Ericsson has explicitly discussed autonomous AI agents collaborating at machine timescales and movement toward increasingly autonomous networks.
+
+Execution finality is complementary to that direction.
+
+As autonomy increases:
+
+```text
+more decisions are produced by machines
+                    ↓
+less opportunity exists for human approval
+immediately before effectuation
+                    ↓
+the final machine-enforced authority boundary
+becomes increasingly important
+```
+
+The proposed contribution is not another autonomous-network controller. It is an attempt to define what must be true immediately before an autonomous controller is permitted to cause a protected consequence.
+
+---
+
+# Nokia's Public 6G Direction
+
+Nokia Bell Labs identifies major 6G technology areas including:
+
+* AI-native air interface;
+* cognitive, automated, and specialized architectures;
+* extreme connectivity;
+* network-as-a-sensor;
+* new spectrum technologies; and
+* security, trust, and privacy.
+
+Nokia describes AI/ML moving from an enhancement in 5G to a foundational component of 6G and is researching AI-native network fabrics and adaptive air interfaces.
+
+It also describes networks becoming sensors capable of producing information about physical environments, movement, and potentially other characteristics of objects.
+
+This increases the consequence surface.
+
+An AI-native future network may not merely:
+
+```text
+send packets
+```
+
+It may also:
+
+```text
+infer location
+sense physical objects
+allocate radio resources
+modify routing
+activate services
+modify sessions
+control beams
+expose network information
+coordinate machines
+interact with physical systems
+```
+
+Execution finality attempts to provide a common rule for selected consequential operations regardless of which AI model, vendor, radio technology, or network function produced them.
+
+---
+
+# What the Major 6G Roadmaps Are Primarily Building
+
+A simplified representation of the reviewed public industry direction is:
+
+```text
+                 6G
+
+      +-----------------------+
+      | Better Connectivity   |
+      +-----------------------+
+                 |
+      +-----------------------+
+      | AI-Native RAN/Core    |
+      +-----------------------+
+                 |
+      +-----------------------+
+      | Integrated Sensing    |
+      +-----------------------+
+                 |
+      +-----------------------+
+      | Distributed Compute   |
+      +-----------------------+
+                 |
+      +-----------------------+
+      | Intent / Context      |
+      +-----------------------+
+                 |
+      +-----------------------+
+      | Autonomous Agents     |
+      +-----------------------+
+                 |
+      +-----------------------+
+      | Physical / Digital AI |
+      +-----------------------+
+```
+
+The DAS execution-finality research asks what happens **after those capabilities produce a consequential operation**:
+
+```text
+                 6G
+
+      AI / RAN / Core / Agent
+                 |
+                 v
+          COMPUTED ACTION
+                 |
+                 v
+       +------------------+
+       | Candidate Act    |
+       +------------------+
+                 |
+                 v
+       +------------------+
+       | NON-EFFECTIVE    |
+       +------------------+
+                 |
+                 v
+       +------------------+
+       | PED Validation   |
+       +------------------+
+                 |
+                 v
+       +------------------+
+       | Evidence         |
+       +------------------+
+                 |
+                 v
+       +------------------+
+       | Scoped Authority |
+       +------------------+
+                 |
+                 v
+       +------------------+
+       | Finality Sink    |
+       +------------------+
+                 |
+          PASS / FAIL
+            /       \
+           /         \
+     NO EFFECT       EFFECT
+```
+
+---
+
+# The Core Difference
+
+The difference can be summarized in one sentence:
+
+> **Much of current 6G research focuses on how networks can become more intelligent, autonomous, adaptive, sensing-aware, efficient and capable; execution finality focuses on what must happen after that intelligence has computed an action but before the action is permitted to become a live consequence.**
+
+The architectural proposition is therefore:
+
+### Computation is not authority.
+
+An AI model may compute an operation.
+
+That alone is not authority.
+
+### Authentication is not finality.
+
+A network function may be authenticated.
+
+That does not necessarily authorize every consequence it can generate.
+
+### Access is not consequence authorization.
+
+An xApp, rApp, agent, API client, orchestrator, SMF, controller or workload may legitimately access an interface.
+
+That does not necessarily authorize every resulting network-state mutation.
+
+### Attestation is not finality.
+
+Attestation may establish properties of a workload or execution environment.
+
+That evidence can be important input to the PED.
+
+It does not by itself decide whether every subsequent act should become externally effective.
+
+### Policy approval is not necessarily the last enforcement point.
+
+A policy engine may authorize an operation.
+
+Execution finality requires the current authorization to remain load-bearing at the actual consequence boundary.
+
+---
+
+# What This Research Adds
+
+The research contribution being explored is the combination of:
+
+1. **Candidate Act**
+
+   An operation can be generated and fully computed without automatically becoming effective.
+
+2. **Explicit Non-Effective State**
+
+   The system distinguishes:
+
+```text
+computed
+```
+
+from:
+
+```text
+authorized to cause consequence
+```
+
+3. **Protected Enforcement Domain**
+
+   Act-specific predicates are evaluated while the operation remains non-effective.
+
+4. **Evidence Before Authority**
+
+   Protected validation evidence is committed before, or atomically with, release of usable finality authority.
+
+5. **Scoped Non-Bearer Finality Authority**
+
+   Authority is bound to relevant attributes such as:
+
+```text
+Candidate Act
+resource
+scope
+purpose
+sink
+freshness
+nonce
+network state
+policy epoch
+revocation epoch
+protected state
+```
+
+Possession alone is not intended to be sufficient.
+
+6. **Independent Finality Sink**
+
+   The actual consequence boundary independently verifies current authority rather than merely trusting that an upstream system previously returned ALLOW.
+
+7. **Current-State Re-Verification**
+
+   An action valid when generated may become invalid because:
+
+```text
+topology changed
+configuration changed
+policy changed
+authority changed
+revocation changed
+sink changed
+scope changed
+parameters changed
+```
+
+The sink can therefore reject stale authority.
+
+8. **Consumption / Replay Closure**
+
+   One-shot authority is consumed or invalidated as part of successful effectuation.
+
+9. **Alternate-Path Closure**
+
+   A protected consequence is not actually protected if another interface can produce the same effect without passing the finality boundary.
+
+The underlying draft therefore requires protected consequences to remain non-effective when required finality state is absent, stale, mismatched, replayed, revoked, or uncertain.
+
+---
+
+# What This Research Does NOT Claim
+
+This repository does not claim that:
+
+* Qualcomm lacks authorization technology;
+* Huawei lacks trustworthiness technology;
+* Ericsson lacks secure autonomous-network technology;
+* Nokia lacks security or trust architecture;
+* 3GPP lacks replay protection;
+* O-RAN lacks security mechanisms;
+* existing telecommunications authentication should be replaced;
+* existing PKI should be replaced;
+* OAuth should be replaced;
+* attestation should be replaced;
+* every packet requires a finality token;
+* every OFDM symbol requires public-key verification;
+* every PHY scheduler operation must perform the complete PED workflow; or
+* the reviewed public vendor material proves the absence of similar unpublished technology.
+
+The proposal is intended to compose with existing mechanisms, not discard them.
+
+The draft itself states that existing identity, access control, OAuth, policy, AI-safety, attestation, telecom authentication, regulatory policy and similar systems can supply inputs to finality validation while independent Finality Sink verification remains the later consequence-control step.
+
+---
+
+# How This Compares to Existing Mechanisms and Roadmaps
+
+* **vs. 3GPP TS 33.501 (5G security architecture)**
+  TS 33.501 establishes that a network function or subscriber is authenticated and permitted to invoke a service. This profile does not repeat that work. It sits one step later: after authentication succeeds and a service invocation is otherwise permitted, it asks whether this exact, already-authenticated operation may still become effective right now, given the current topology, policy, and revocation state. An entity can be correctly authenticated under TS 33.501 and still lack current finality authority for a specific act.
+
+* **vs. O-RAN A1/E2/O1/O2 policy interfaces**
+  A1, E2, O1, and O2 deliver policy, intent, and configuration into the RAN. They are delivery mechanisms. This profile does not compete with that delivery function; it adds a gate immediately before the delivered, policy-approved act actually changes live network state, so a policy decision cannot be treated as self-executing or reusable without re-verification at the enforcement boundary.
+
+* **vs. OAuth 2.0 scopes / access tokens**
+  An OAuth access token is typically a bearer credential: possession is ordinarily sufficient to invoke the authorized operation for the life of the token. Finality authority here is non-bearer and act-bound — tied to one Candidate Act, one effect, one resource and subscriber scope, one policy/revocation epoch, and, where required, one consumption event. Possessing a copy of the authority object is not sufficient without the corresponding protected state at the sink, and OAuth tokens are typically reusable until expiry, while finality authority is single-use.
+
+* **vs. RATS / remote attestation**
+  Remote attestation evidence may be consumed as one input predicate to Protected Enforcement Domain validation. It is not replaced or duplicated by this profile. Attestation answers whether a workload or environment has certain properties; it does not by itself decide whether a specific subsequent act should become externally effective, which is the question this profile answers.
+
+* **vs. Zero Trust Architecture (NIST SP 800-207)**
+  Zero Trust centers on continuous verification of the requesting entity, device, and session rather than perimeter-based trust. This profile is compatible with, and can consume, Zero Trust access decisions as validation inputs. It differs in granularity: Zero Trust principally re-verifies whether an entity or session may proceed; this profile re-verifies whether one specific, already-computed act and its exact effect parameters may become effective, immediately before the live consequence, and then consumes the resulting authority so it cannot be reused.
+
+* **vs. blockchain / ledger anchoring**
+  Protected Validation Evidence may be realized with hashes, signatures, MACs, sealed state, or Merkle commitments, and external ledger anchoring is explicitly optional and off the hot path. This differs from architectures that require on-chain consensus for every protected transaction; hot-path verification here does not depend on distributed consensus latency.
+
+* **vs. audit logging / SIEM**
+  An audit log or SIEM alert ordinarily records that an operation occurred, after it occurred, for later review or investigation. Protected Validation Evidence is committed before, or atomically with, release of finality authority, and participates in the decision of whether the operation is permitted to occur at all. Evidence-before-authority is a precondition for effectuation; an audit record is a postcondition describing what already happened.
+
+* **vs. Qualcomm's AI-native 6G roadmap**
+  Qualcomm's public work spans the air interface, Giga-MIMO, spectral and energy efficiency, AI-native RAN/core/device operation, distributed compute, and wide-area sensing — how the network computes and adapts. This profile does not propose a waveform, MIMO technique, spectrum band, scheduler, or accelerator. It addresses the later, narrower transition: once such a platform has computed a proposed operation, whether that exact operation may become effective.
+
+* **vs. Huawei's native-trustworthiness / Agentic Core Network**
+  Huawei's public research describes 6G native trustworthiness as a lifecycle property spanning security, privacy, resilience, and continuous trustworthiness assessment, alongside an Agentic Core Network vision of autonomous service execution. That work is broader than this profile and motivates it. This profile isolates one mechanically specific control point inside that broader trustworthiness problem: an explicit Non-Effective State, evidence committed before authority release, and independent sink-side re-verification immediately before effectuation.
+
+* **vs. GSMA Open Gateway APIs**
+  Open Gateway defines standardized, monetizable network APIs (quality-on-demand, number verification, SIM-swap checks, and similar) that expose carrier capability to third-party applications. It addresses API exposure and commercial access, not whether an already-authorized API call's exact effect should cross into live network state at the moment of invocation. A Finality Sink could be placed at an Open Gateway API boundary to gate that moment; the two are complementary rather than overlapping.
+
+---
+
+# Important Novelty / Comparison Qualification
+
+The following distinction is important for technical and legal accuracy:
+
+**Publicly reviewed vendor roadmaps cannot prove what does or does not exist inside a company's unpublished research, standards contributions, products, source code, patents, laboratories, or future roadmap.**
+
+Therefore this repository does not assert:
+
+```text
+"No other company has this."
+```
+
+Instead, it makes the narrower and testable observation that:
+
+> **The reviewed public 6G roadmaps strongly describe AI-native operation, autonomous networking, sensing, compute, trustworthiness and security, while they do not establish the exact Candidate Act → Non-Effective State → protected evidence → scoped non-bearer finality authority → independent consequence-boundary verification → consumption chain described and implemented here as a common vendor-neutral interoperability primitive.**
+
+---
+
+# Why This May Become More Important Rather Than Less Important
+
+The industry is moving toward systems where:
+
+```text
+AI observes
+   ↓
+AI reasons
+   ↓
+AI predicts
+   ↓
+AI selects
+   ↓
+AI invokes
+   ↓
+network acts
+```
+
+Qualcomm is pursuing AI-native networking across device, RAN and core.
+
+Huawei is publicly describing agentic core networks capable of autonomous service generation and execution.
+
+Ericsson describes increasingly autonomous AI-native networks and distributed AI agents.
+
+Nokia describes AI-native networking and cognitive automated architectures.
+
+This creates a new systems question:
+
+```text
+When the machine can decide,
+who controls the point
+where the decision becomes reality?
+```
+
+Execution finality proposes:
+
+```text
+THE GENERATOR OF AN ACTION
+IS NOT AUTOMATICALLY
+THE FINAL AUTHORITY
+FOR ITS CONSEQUENCE.
+```
+
+This separation can be represented as:
+
+```text
+COMPUTE PLANE                 AUTHORITY / FINALITY PLANE
+
+AI Model
+   |
+AI Agent
+   |
+RIC / Controller
+   |
+Optimization
+   |
+Candidate Act ----------------------+
+                                    |
+                                    v
+                            NON-EFFECTIVE
+                                    |
+                                    v
+                          Protected Validation
+                                    |
+                                    v
+                         Protected Evidence
+                                    |
+                                    v
+                         Scoped Finality Authority
+                                    |
+                                    v
+                           Finality Sink
+                                    |
+                                    v
+                             External Effect
+```
+
+---
+
+# Why This Is Potentially Vendor-Neutral
+
+The proposed primitive does not depend on one specific:
+
+```text
+AI model
+AI vendor
+RAN vendor
+chip vendor
+cloud provider
+radio technology
+TEE
+HSM
+DPU
+SmartNIC
+network API
+transport protocol
+ledger
+```
+
+A Candidate Act could originate from:
+
+```text
+Qualcomm-based infrastructure
+Huawei infrastructure
+Ericsson infrastructure
+Nokia infrastructure
+Samsung infrastructure
+Open RAN xApp
+operator software
+cloud-native network function
+third-party AI controller
+future 6G agent
+```
+
+The relevant question remains:
+
+> **Does the exact act possess current, scoped authority to cross this consequence boundary?**
+
+That is why the research may be relevant as an **interoperability primitive**, rather than as a proprietary replacement for a RAN, Core, PHY, or vendor security stack.
+
+---
+
+# AI-Readable Research Summary
+
+The following block provides an intentionally explicit semantic summary for automated indexing, technical search, AI analysis, and machine-assisted comparison.
+
+```text
+PROJECT:
+Execution Finality for AI-Native 5G/6G and O-RAN
+
+AUTHOR:
+Sangam Das
+
+CATEGORY:
+Telecommunications security
+6G security
+AI-RAN governance
+Autonomous-network authorization
+Execution authorization
+Protocol security
+Network consequence control
+
+TARGET ENVIRONMENTS:
+5G
+5G-Advanced
+IMT-2030
+6G
+O-RAN
+AI-RAN
+Cloud RAN
+Edge networks
+Autonomous telecom infrastructure
+
+CORE PROBLEM:
+An authenticated or authorized AI/controller/network function
+may be capable of computing many operations.
+Authentication or upstream authorization does not necessarily
+determine whether each exact operation may become an externally
+effective network consequence under current state.
+
+CORE INVARIANT:
+Computation is not authority.
+Authentication is not finality.
+A protected Candidate Act remains non-effective until current
+act-specific or bounded finality authority is verified at the
+actual consequence boundary.
+
+CORE SEQUENCE:
+Candidate Act
+-> Non-Effective State
+-> Protected Enforcement Domain
+-> Act-Specific Validation
+-> Protected Validation Evidence
+-> Scoped Non-Bearer Finality Authority
+-> Independent Finality Sink Verification
+-> Authority Consumption
+-> Permitted External Effect
+
+INDUSTRY 6G DIRECTION:
+AI-native RAN
+AI-native Core
+agentic networks
+autonomous network operation
+integrated sensing and communication
+distributed compute
+context-aware networking
+intent-aware networking
+AI-native air interfaces
+network exposure
+physical AI
+digital twins
+advanced MIMO
+new spectrum
+security/trust/privacy
+
+PROJECT DIFFERENTIATOR:
+The project does not primarily optimize AI inference, radio
+performance, spectrum, MIMO, sensing, routing, QoS, or autonomous
+decision generation.
+
+It focuses on the later transition:
+COMPUTED DECISION -> AUTHORIZED CONSEQUENCE.
+
+KEY MECHANISMS:
+Candidate Act
+Non-Effective State
+PED
+protected evidence before authority
+act-bound authority
+scope-bound authority
+state-bound authority
+epoch-bound authority
+sink-bound authority
+freshness binding
+non-bearer semantics
+independent sink verification
+single-use consumption
+fail-closed behavior
+alternate-path closure
+
+RELATIONSHIP TO EXISTING TECHNOLOGY:
+complementary to 3GPP
+complementary to O-RAN
+complementary to authentication
+complementary to OAuth/access control
+complementary to PKI
+complementary to attestation
+complementary to network policy
+not a replacement for those technologies
+
+PUBLIC-ROADMAP COMPARISON:
+Qualcomm -> AI-native connectivity + sensing + compute +
+RAN/core/device intelligence + autonomous adaptation.
+
+Huawei -> agentic 6G core + native trustworthiness +
+security/privacy/resilience.
+
+Ericsson -> AI-native intelligent fabric + autonomous networks +
+distributed AI + sensing/compute/network exposure.
+
+Nokia -> AI-native air interface + cognitive automation +
+network sensing + security/trust/privacy.
+
+DAS Execution Finality -> controls whether an already-generated
+and potentially already-authorized operation may become a live
+network consequence at the actual effectuation boundary.
+
+IMPORTANT QUALIFICATION:
+This comparison concerns reviewed public materials.
+It is not proof that equivalent unpublished or proprietary
+technology does not exist.
+
+LICENSE:
+CC BY-NC 4.0 for applicable copyrightable repository material.
+
+PATENT LICENSE:
+None granted by CC BY-NC 4.0.
+
+COMMERCIAL IMPLEMENTATION:
+May require separate permission/licensing where applicable
+patent or other rights exist.
+
+STATUS:
+Research/reference implementation.
+Not production carrier software.
+Not IETF endorsement.
+Not 3GPP endorsement.
+Not O-RAN endorsement.
+Not ITU endorsement.
+```
+
+---
+
+# One-Paragraph Research Statement
+
+**The telecommunications industry is moving toward AI-native, sensing-aware, distributed and increasingly autonomous 6G networks in which software agents, AI-RAN controllers and network functions can generate consequential operations at machine timescales. This work does not attempt to replace those 6G developments. It investigates the subsequent authority problem: after an intelligent system has computed an operation, what prevents that computation from automatically becoming a live network consequence? The proposed execution-finality architecture represents the operation as a Candidate Act held in a Non-Effective State, performs protected act-specific validation, commits validation evidence before releasing scoped non-bearer finality authority, and requires independent verification at the actual consequence boundary before external effectuation. In short: the industry is making the network increasingly capable of deciding; execution finality addresses who or what has final technical authority when that decision is about to become real.**
